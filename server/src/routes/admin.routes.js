@@ -1,13 +1,16 @@
 const express = require("express");
 const restrictedUserOnly = require("../middleware/auth.middleware");
 const adminOnly = require("../middleware/admin.middleware");
+const {
+  adminCreateTask,
+  taskToEmployee,
+  assignmentValidation,
+} = require("../controllers/admin.controller");
 const router = express.Router();
 
 router.use(restrictedUserOnly);
 router.use(adminOnly);
-router.post("/tasks", (req, res) => {
-  return res.send("admin routes post tsaks");
-});
+router.post("/tasks", adminCreateTask);
 router.get("/tasks", (req, res) => {
   return res.send("admin routes get tasks");
 });
