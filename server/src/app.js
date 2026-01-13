@@ -2,7 +2,10 @@
 const express = require("express");
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
-const { userSignUp, userLogin } = require("./controllers/auth.controller");
+const restrictedUserOnly = require("./middleware/auth.middleware");
+const authRouter = require("./routes/auth.routes");
+const adminRouter = require("./routes/admin.routes");
+const taskRoutes = require("./routes/task.routes");
 const app = express();
 
 connectDB();
@@ -12,7 +15,8 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 //demo route
-app.post("/register", userSignUp);
-app.post("/login", userLogin);
+app.use("/api/auth", authRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/tasks", taskRoutes);
 
 module.exports = app;

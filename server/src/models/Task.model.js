@@ -5,24 +5,27 @@ const taskShema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true,
     },
-
     description: {
       type: String,
-      trim: true,
     },
 
     status: {
       type: String,
-      enum: ["pending", "completed"],
+      enum: ["pending", "in-progress", "completed"],
       default: "pending",
     },
 
-    owner: {
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: true, // ADMIN
+    },
+
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true, // EMPLOYEE
     },
   },
   { timestamps: true }

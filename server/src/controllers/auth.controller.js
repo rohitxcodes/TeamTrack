@@ -31,4 +31,7 @@ async function userLogin(req, res) {
     return res.send("Something went Wrong");
   }
 }
-module.exports = { userSignUp, userLogin };
+function userLogout(req, res) {
+  res.clearCookie("token");
+}
+module.exports = { userSignUp, userLogin, userLogout };
