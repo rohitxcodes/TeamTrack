@@ -8,6 +8,7 @@ async function connectDB() {
     });
   } catch (err) {
     console.log(`Mongo Connection failed`);
+    console.error(err);
   }
 }
 module.exports = connectDB;
