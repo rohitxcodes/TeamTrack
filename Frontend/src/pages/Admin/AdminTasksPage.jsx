@@ -65,7 +65,7 @@ function AdminTasksPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
+      <div className="tt-card p-6">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <PageHeader
             title="Admin Tasks"
@@ -74,14 +74,14 @@ function AdminTasksPage() {
           <button
             type="button"
             onClick={loadTasks}
-            className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+            className="tt-btn-secondary"
           >
             {loading ? "Refreshing..." : "Refresh"}
           </button>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
+      <div className="tt-card p-6">
         {tasks.length > 0 ? (
           <ul className="divide-y divide-slate-200">
             {tasks.map((task, index) => {
@@ -107,7 +107,7 @@ function AdminTasksPage() {
                     type="button"
                     onClick={() => onDeleteTask(taskId)}
                     disabled={isDeleting}
-                    className="rounded-xl border border-red-300 bg-white px-3 py-2 font-semibold text-red-700 transition hover:-translate-y-0.5 hover:bg-red-50 disabled:opacity-60 dark:border-red-900 dark:bg-slate-900 dark:text-red-300 dark:hover:bg-slate-800"
+                    className="tt-btn-danger disabled:opacity-60"
                   >
                     {isDeleting ? "Deleting..." : "Delete"}
                   </button>

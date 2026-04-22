@@ -1,27 +1,49 @@
-const User = require("../models/User.model");
-const Task = require("../models/Task.model");
+const {
+  createTask,
+  getTasks,
+  patchTaskById,
+  deleteTaskById,
+  getUsers,
+  deleteUserById,
+} = require("../services/admin.service");
+
 async function adminCreateTask(req, res) {
   const { title, description, status } = req.body;
   const adminId = req.user.id;
-
-  if (!title) {
-    return res.status(400).json({ message: "Task title is required" });
-  }
-
-  try {
-    const task = await Task.create({
-      title,
-      description,
-      status,
-      createdBy: adminId,
-    });
-
-    return res.status(201).json({ message: "Task created", task });
-  } catch (err) {
-    console.log(`error is ${err}`);
-    return res.status(500).json({ message: "Something went wrong" });
-  }
+  const response = await createTask({ title, description, status, adminId });
+  return res.status(response.status).json(response.body);
 }
-function taskToEmployee(req, res) {}
-function assignmentValidation(req, res) {}
-module.exports = { adminCreateTask, taskToEmployee, assignmentValidation };
+
+function adminGetTasks(req, res) {
+  const response = getTasks();
+  return res.status(response.status).json(response.body);
+}
+
+function adminPatchTaskById(req, res) {
+  const response = patchTaskById(req.params.id, req.body);
+  return res.status(response.status).json(response.body);
+}
+
+function adminDeleteTaskById(req, res) {
+  const response = deleteTaskById(req.params.id);
+  return res.status(response.status).json(response.body);
+}
+
+function adminGetUsers(req, res) {
+  const response = getUsers();
+  return res.status(response.status).json(response.body);
+}
+
+function adminDeleteUserById(req, res) {
+  const response = deleteUserById(req.params.id);
+  return res.status(response.status).json(response.body);
+}
+
+module.exports = {
+  adminCreateTask,
+  adminGetTasks,
+  adminPatchTaskById,
+  adminDeleteTaskById,
+  adminGetUsers,
+  adminDeleteUserById,
+};

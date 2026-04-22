@@ -26,18 +26,14 @@ function WorkSpace() {
   }
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-[0_6px_24px_rgba(15,23,42,0.06)] md:p-8 dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
+    <section className="tt-card p-6 md:p-8">
       <PageHeader
         title="Workspace"
         subtitle="Group context hook-up. This currently calls /api/groups/my."
         className="mb-4"
       />
 
-      <button
-        type="button"
-        onClick={fetchGroups}
-        className="rounded-xl bg-slate-900 px-4 py-2 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-blue-600 dark:text-slate-50 dark:hover:bg-blue-500"
-      >
+      <button type="button" onClick={fetchGroups} className="tt-btn-primary">
         {loading ? "Loading..." : "Load my groups"}
       </button>
 

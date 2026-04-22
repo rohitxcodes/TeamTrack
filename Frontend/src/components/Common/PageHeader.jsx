@@ -7,10 +7,10 @@ function PageHeader({
 }) {
   const titleClass =
     level === "display"
-      ? "text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tight font-extrabold text-slate-900 dark:text-slate-100"
+      ? "tt-heading-display"
       : level === "section"
-        ? "text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100"
-        : "text-3xl md:text-4xl leading-tight tracking-tight font-extrabold text-slate-900 dark:text-slate-100";
+        ? "tt-heading-section"
+        : "tt-heading-page";
 
   return (
     <div
@@ -18,9 +18,7 @@ function PageHeader({
     >
       <div>
         <h1 className={titleClass}>{title}</h1>
-        {subtitle ? (
-          <p className="mt-2 text-slate-600 dark:text-slate-300">{subtitle}</p>
-        ) : null}
+        {subtitle ? <p className="tt-muted mt-2">{subtitle}</p> : null}
       </div>
       {actions ? (
         <div className="flex items-center gap-2">{actions}</div>

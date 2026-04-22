@@ -52,8 +52,8 @@ function HomePage() {
   ];
 
   return (
-    <section className="relative isolate overflow-hidden rounded-3xl border border-slate-200 bg-white/90 shadow-[0_8px_30px_rgba(15,23,42,0.08)] dark:border-slate-700 dark:bg-slate-900/90 dark:shadow-[0_10px_34px_rgba(2,6,23,0.55)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(15,118,110,0.16),transparent_40%),radial-gradient(circle_at_85%_10%,rgba(249,115,22,0.14),transparent_36%),linear-gradient(180deg,#f8fafc_0%,#eef2ff_100%)] dark:bg-[radial-gradient(circle_at_18%_20%,rgba(45,212,191,0.14),transparent_42%),radial-gradient(circle_at_84%_12%,rgba(59,130,246,0.16),transparent_38%),linear-gradient(180deg,#0f172a_0%,#0b1220_100%)]" />
+    <section className="tt-card relative isolate overflow-hidden rounded-3xl">
+      <div className="tt-home-ambient absolute inset-0" />
 
       <div className="relative px-5 py-7 sm:px-8 sm:py-10 lg:px-12 lg:py-12 space-y-10">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-8 items-start">
@@ -69,16 +69,10 @@ function HomePage() {
             />
 
             <div className="flex flex-wrap items-center gap-3">
-              <Link
-                to="/dashboard"
-                className="rounded-xl bg-slate-900 px-4 py-2 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-blue-600 dark:text-slate-50 dark:hover:bg-blue-500"
-              >
+              <Link to="/dashboard" className="tt-btn-primary">
                 Open Dashboard
               </Link>
-              <Link
-                to="/workspace"
-                className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 dark:hover:bg-slate-800"
-              >
+              <Link to="/workspace" className="tt-btn-secondary">
                 Explore Workspace
               </Link>
             </div>
@@ -87,12 +81,12 @@ function HomePage() {
               {workflow.map((step) => (
                 <div
                   key={step.title}
-                  className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-[0_6px_24px_rgba(15,23,42,0.06)] backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]"
+                  className="tt-card bg-white/90 backdrop-blur p-4"
                 >
-                  <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">
+                  <p className="text-sm font-extrabold text-slate-900">
                     {step.title}
                   </p>
-                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                  <p className="text-sm text-slate-600 mt-1">
                     {step.description}
                   </p>
                 </div>
@@ -128,11 +122,9 @@ function HomePage() {
         </div>
 
         <div className="grid lg:grid-cols-[1fr_1fr] gap-4">
-          <article className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
-            <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-              Quick Access
-            </h2>
-            <p className="mt-1 mb-4 text-sm text-slate-600 dark:text-slate-300">
+          <article className="tt-card p-5">
+            <h2 className="tt-heading-section">Quick Access</h2>
+            <p className="text-sm text-slate-600 mt-1 mb-4">
               Jump to your most used screens.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 auto-rows-fr">
@@ -140,18 +132,13 @@ function HomePage() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="group relative flex min-h-[112px] flex-col gap-1 rounded-2xl border border-slate-200 bg-linear-to-br from-white to-slate-100 p-4 transition hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-[0_10px_22px_rgba(15,23,42,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/60 dark:border-slate-700 dark:from-slate-900 dark:to-slate-800 dark:hover:border-slate-500 dark:hover:shadow-[0_12px_24px_rgba(2,6,23,0.5)]"
+                  className="tt-quick-link group"
                 >
-                  <span className="text-[0.95rem] font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                    {item.label}
-                  </span>
-                  <span className="pr-6 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                  <span className="tt-quick-link-title">{item.label}</span>
+                  <span className="tt-quick-link-description">
                     {item.description}
                   </span>
-                  <span
-                    className="absolute right-3 top-3 text-base font-bold text-teal-700 transition group-hover:translate-x-0.5 dark:text-teal-300"
-                    aria-hidden="true"
-                  >
+                  <span className="tt-quick-link-arrow" aria-hidden="true">
                     →
                   </span>
                 </Link>
@@ -159,11 +146,9 @@ function HomePage() {
             </div>
           </article>
 
-          <article className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
-            <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-              Platform Highlights
-            </h2>
-            <p className="mt-1 mb-4 text-sm text-slate-600 dark:text-slate-300">
+          <article className="tt-card p-5">
+            <h2 className="tt-heading-section">Platform Highlights</h2>
+            <p className="text-sm text-slate-600 mt-1 mb-4">
               Everything teams need to organize, track, and ship work.
             </p>
             <ul className="space-y-2 text-sm">

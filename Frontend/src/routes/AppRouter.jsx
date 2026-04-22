@@ -16,7 +16,7 @@ import AdminTasksPage from "../pages/Admin/AdminTasksPage";
 
 function AppRouter() {
   return (
-    <div className="min-h-screen flex flex-col bg-linear-to-b from-emerald-50 via-slate-50 to-orange-50 text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100">
+    <div className="min-h-screen text-slate-900 flex flex-col">
       <Navbar />
       <main className="w-full max-w-6xl mx-auto px-4 py-8 md:py-10 flex-1">
         <Routes>

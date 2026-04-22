@@ -6,8 +6,8 @@ function Footer() {
 
   if (!isPublicFooter) {
     return (
-      <footer className="border-t border-slate-200/90 bg-white/70 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/70">
-        <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-2 px-4 py-5 text-xs text-slate-600 dark:text-slate-300">
+      <footer className="border-t border-slate-200/90 bg-white/70 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4 py-5 text-xs text-slate-600 flex flex-wrap gap-2 justify-between">
           <p>TeamTrack Workspace</p>
           <p>Secure Role-Based Task Management</p>
         </div>
@@ -22,7 +22,7 @@ function Footer() {
           <img
             src="/logoDark.svg"
             alt="TeamTrack"
-            className="h-12 w-auto opacity-95 contrast-125 brightness-200 grayscale"
+            className="tt-footer-wordmark h-12 w-auto"
           />
           <p className="mt-8 max-w-md text-[15px] leading-8 text-slate-400">
             The role-based task management platform for secure team execution,

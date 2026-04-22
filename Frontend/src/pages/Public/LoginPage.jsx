@@ -37,7 +37,7 @@ function LoginPage() {
   }
 
   return (
-    <section className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-[0_6px_24px_rgba(15,23,42,0.06)] md:p-8 dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
+    <section className="tt-card max-w-lg mx-auto p-6 md:p-8">
       <PageHeader
         title="Login"
         subtitle="Access your TeamTrack workspace."
@@ -48,7 +48,7 @@ function LoginPage() {
         <label className="block space-y-1">
           <span className="text-sm font-medium">Email</span>
           <input
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 transition focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="tt-input"
             name="email"
             type="email"
             required
@@ -60,7 +60,7 @@ function LoginPage() {
         <label className="block space-y-1">
           <span className="text-sm font-medium">Password</span>
           <input
-            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 transition focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="tt-input"
             name="password"
             type="password"
             required
@@ -71,7 +71,7 @@ function LoginPage() {
 
         <button
           disabled={submitting}
-          className="w-full rounded-xl bg-slate-900 px-4 py-2 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:opacity-70 dark:bg-blue-600 dark:text-slate-50 dark:hover:bg-blue-500"
+          className="tt-btn-primary w-full disabled:opacity-70"
           type="submit"
         >
           {submitting ? "Signing in..." : "Sign in"}
@@ -83,11 +83,11 @@ function LoginPage() {
       ) : null}
       {error ? <p className="mt-4 text-red-600 text-sm">{error}</p> : null}
 
-      <p className="mt-6 text-sm text-slate-600 dark:text-slate-300">
+      <p className="mt-6 text-sm tt-muted">
         No account yet?{" "}
         <Link
           to="/register"
-          className="text-slate-900 underline decoration-teal-500 dark:text-slate-100"
+          className="text-slate-900 underline decoration-teal-500"
         >
           Register here
         </Link>

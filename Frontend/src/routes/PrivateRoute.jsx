@@ -7,7 +7,7 @@ function PrivateRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="grid place-items-center rounded-2xl border border-slate-200 bg-white/90 p-8 text-slate-700 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
+      <div className="tt-card p-8 grid place-items-center text-slate-700">
         Checking session...
       </div>
     );

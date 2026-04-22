@@ -57,24 +57,22 @@ function AboutPage() {
   ];
 
   return (
-    <section className="space-y-8 rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-[0_6px_24px_rgba(15,23,42,0.06)] md:p-8 dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
+    <section className="tt-card p-6 md:p-8 space-y-8">
       <PageHeader
         title="About Us"
         subtitle="TeamTrack is built to show how a secure role-based task management system should work in practice: authentication, authorization, and ownership-aware workflows."
       />
 
       <article className="space-y-3">
-        <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-          Why TeamTrack Exists
-        </h2>
-        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">
+        <h2 className="tt-heading-section">Why TeamTrack Exists</h2>
+        <p className="tt-muted text-sm leading-7">
           Most beginner project dashboards allow any logged-in user to see or
           change everything. TeamTrack was created to solve that problem by
           separating public, protected, and admin-only experiences. It gives you
           a clean place to understand how secure login, role checks, group
           membership, and task ownership should work together.
         </p>
-        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">
+        <p className="tt-muted text-sm leading-7">
           The goal is to be practical, interview-ready, and easy to extend:
           employees can stay focused on their assigned work, while admins keep
           control over users and global task management.
@@ -82,10 +80,8 @@ function AboutPage() {
       </article>
 
       <article className="space-y-3">
-        <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-          1. Quick Start
-        </h2>
-        <ol className="list-decimal space-y-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
+        <h2 className="tt-heading-section">1. Quick Start</h2>
+        <ol className="list-decimal pl-5 space-y-2 text-sm tt-muted">
           {quickStartSteps.map((step) => (
             <li key={step}>{step}</li>
           ))}
@@ -93,42 +89,28 @@ function AboutPage() {
       </article>
 
       <article className="space-y-3">
-        <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-          2. Navigation Map
-        </h2>
+        <h2 className="tt-heading-section">2. Navigation Map</h2>
         <div className="grid md:grid-cols-2 gap-4 text-sm">
-          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">
-              Public
-            </p>
-            <p className="mt-1 text-slate-600 dark:text-slate-300">
+          <div className="tt-card p-4">
+            <p className="font-semibold text-slate-900">Public</p>
+            <p className="tt-muted mt-1">
               Landing, Home, About, Login, Register
             </p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">
-              Protected
-            </p>
-            <p className="mt-1 text-slate-600 dark:text-slate-300">
-              Dashboard, Workspace, Account
-            </p>
+          <div className="tt-card p-4">
+            <p className="font-semibold text-slate-900">Protected</p>
+            <p className="tt-muted mt-1">Dashboard, Workspace, Account</p>
           </div>
-          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-[0_6px_24px_rgba(15,23,42,0.06)] md:col-span-2 dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
-            <p className="font-semibold text-slate-900 dark:text-slate-100">
-              Admin Only
-            </p>
-            <p className="mt-1 text-slate-600 dark:text-slate-300">
-              Admin Users, Admin Tasks
-            </p>
+          <div className="tt-card p-4 md:col-span-2">
+            <p className="font-semibold text-slate-900">Admin Only</p>
+            <p className="tt-muted mt-1">Admin Users, Admin Tasks</p>
           </div>
         </div>
       </article>
 
       <article className="space-y-3">
-        <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-          3. Admin Workflow Guide
-        </h2>
-        <ul className="list-disc space-y-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
+        <h2 className="tt-heading-section">3. Admin Workflow Guide</h2>
+        <ul className="list-disc pl-5 space-y-2 text-sm tt-muted">
           {adminFlow.map((item) => (
             <li key={item}>{item}</li>
           ))}
@@ -136,10 +118,8 @@ function AboutPage() {
       </article>
 
       <article className="space-y-3">
-        <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-          4. Employee Workflow Guide
-        </h2>
-        <ul className="list-disc space-y-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
+        <h2 className="tt-heading-section">4. Employee Workflow Guide</h2>
+        <ul className="list-disc pl-5 space-y-2 text-sm tt-muted">
           {employeeFlow.map((item) => (
             <li key={item}>{item}</li>
           ))}
@@ -147,10 +127,8 @@ function AboutPage() {
       </article>
 
       <article id="workspace-guide" className="space-y-3 scroll-mt-24">
-        <h2 className="text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100">
-          5. Workspace Guide
-        </h2>
-        <ul className="list-disc space-y-2 pl-5 text-sm text-slate-600 dark:text-slate-300">
+        <h2 className="tt-heading-section">5. Workspace Guide</h2>
+        <ul className="list-disc pl-5 space-y-2 text-sm tt-muted">
           <li>Open Workspace from the navbar after login.</li>
           <li>Click Load my groups to fetch your accessible groups.</li>
           <li>
@@ -168,24 +146,16 @@ function AboutPage() {
       </article>
 
       <article className="space-y-3">
-        <h2
-          id="faq"
-          className="scroll-mt-24 text-xl md:text-2xl leading-snug font-bold text-slate-900 dark:text-slate-100"
-        >
+        <h2 id="faq" className="tt-heading-section scroll-mt-24">
           FAQ
         </h2>
         <div className="space-y-3">
           {faqItems.map((item) => (
-            <details
-              key={item.question}
-              className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-[0_6px_24px_rgba(15,23,42,0.06)] dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]"
-            >
-              <summary className="cursor-pointer list-none font-semibold text-slate-900 dark:text-slate-100">
+            <details key={item.question} className="tt-card p-4">
+              <summary className="cursor-pointer list-none font-semibold text-slate-900">
                 {item.question}
               </summary>
-              <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-                {item.answer}
-              </p>
+              <p className="mt-3 text-sm tt-muted leading-7">{item.answer}</p>
             </details>
           ))}
         </div>

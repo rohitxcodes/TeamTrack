@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useTheme } from "../../context/useTheme";
-
+import userIcon from "../../../public/user.svg";
 function Navbar() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -10,15 +10,13 @@ function Navbar() {
   const navLinkClass = ({ isActive }) =>
     `rounded-lg px-2.5 py-1.5 transition ${
       isActive
-        ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-        : "text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-slate-100 dark:hover:bg-slate-800"
+        ? theme === "dark"
+          ? "bg-slate-100 text-slate-900"
+          : "bg-slate-900 text-white"
+        : theme === "dark"
+          ? "text-slate-300 hover:text-slate-50 hover:bg-slate-800"
+          : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
     }`;
-
-  const secondaryButtonClass =
-    "rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-900 transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 dark:hover:bg-slate-800";
-
-  const primaryButtonClass =
-    "rounded-xl bg-slate-900 px-4 py-2 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 dark:bg-blue-600 dark:text-slate-50 dark:hover:bg-blue-500";
 
   async function onLogout() {
     await logout();
@@ -26,7 +24,7 @@ function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/90 bg-white/80 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/80">
+    <header className="tt-navbar sticky top-0 z-20 border-b border-slate-200/90 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <Link
           to="/"
@@ -44,7 +42,7 @@ function Navbar() {
           <button
             type="button"
             onClick={toggleTheme}
-            className={secondaryButtonClass}
+            className="tt-btn-secondary"
             aria-label="Toggle color theme"
           >
             {theme === "dark" ? "Light" : "Dark"}
@@ -52,9 +50,6 @@ function Navbar() {
 
           <NavLink to="/home" className={navLinkClass}>
             Home
-          </NavLink>
-          <NavLink to="/about" className={navLinkClass}>
-            About
           </NavLink>
 
           {user ? (
@@ -65,8 +60,11 @@ function Navbar() {
               <NavLink to="/workspace" className={navLinkClass}>
                 Workspace
               </NavLink>
+              <NavLink to="/about" className={navLinkClass}>
+                About
+              </NavLink>
               <NavLink to="/account" className={navLinkClass}>
-                Account
+                <img src={userIcon} alt="account" className="w-7 h-7" />
               </NavLink>
               {user?.role === "admin" ? (
                 <>
@@ -81,7 +79,7 @@ function Navbar() {
               <button
                 type="button"
                 onClick={onLogout}
-                className={secondaryButtonClass}
+                className="tt-btn-secondary"
               >
                 Logout
               </button>
@@ -91,7 +89,7 @@ function Navbar() {
               <NavLink to="/login" className={navLinkClass}>
                 Login
               </NavLink>
-              <NavLink to="/register" className={primaryButtonClass}>
+              <NavLink to="/register" className="tt-btn-primary">
                 Register
               </NavLink>
             </>
