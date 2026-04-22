@@ -1,5 +1,6 @@
 // app.js: Express app setup (middleware + routes only)
 const express = require("express");
+require("dotenv").config();
 const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const restrictedUserOnly = require("./middleware/auth.middleware");

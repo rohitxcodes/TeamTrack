@@ -11,6 +11,20 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const normalizeUser = useCallback((payload) => {
+    if (!payload || typeof payload !== "object") return null;
+    if (payload.user && typeof payload.user === "object") return payload.user;
+    if (
+      payload.id ||
+      payload._id ||
+      payload.email ||
+      payload.role ||
+      payload.name
+    )
+      return payload;
+    return null;
+  }, []);
+
   const refreshMe = useCallback(async () => {
     try {
       const meResponse = await getMe();
@@ -20,20 +34,24 @@ export function AuthProvider({ children }) {
           (prev) => prev || { name: "User", role: "employee", raw: meResponse },
         );
       } else {
-        setUser(meResponse);
+        setUser(normalizeUser(meResponse));
       }
     } catch {
       setUser(null);
     }
-  }, []);
+  }, [normalizeUser]);
 
   const login = useCallback(
     async (credentials) => {
       const response = await loginApi(credentials);
+      const normalizedFromLogin = normalizeUser(response);
+      if (normalizedFromLogin) {
+        setUser(normalizedFromLogin);
+      }
       await refreshMe();
       return response;
     },
-    [refreshMe],
+    [normalizeUser, refreshMe],
   );
 
   const register = useCallback(async (data) => {

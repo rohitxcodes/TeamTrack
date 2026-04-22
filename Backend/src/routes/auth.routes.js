@@ -12,6 +12,14 @@ router.post("/login", userLogin);
 router.use(restrictedUserOnly);
 router.post("/logout", userLogout);
 router.get("/me", (req, res) => {
-  return res.send("hello restricted");
+  return res.status(200).json({
+    message: "Authenticated user",
+    user: {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      role: req.user.role,
+    },
+  });
 });
 module.exports = router;

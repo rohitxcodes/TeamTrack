@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
+import AdminRoute from "./AdminRoute";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import LandingPage from "../pages/Public/LandingPage";
@@ -10,12 +11,14 @@ import RegisterPage from "../pages/Public/RegisterPage";
 import Dashboard from "../pages/Both/Dashboard";
 import WorkSpace from "../pages/Both/WorkSpace";
 import AccountPage from "../pages/Both/AccountPage";
+import AdminUsersPage from "../pages/Admin/AdminUsersPage";
+import AdminTasksPage from "../pages/Admin/AdminTasksPage";
 
 function AppRouter() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen flex flex-col bg-linear-to-b from-emerald-50 via-slate-50 to-orange-50 text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-slate-100">
       <Navbar />
-      <main className="w-full max-w-6xl mx-auto px-4 py-8 flex-1">
+      <main className="w-full max-w-6xl mx-auto px-4 py-8 md:py-10 flex-1">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/home" element={<HomePage />} />
@@ -45,6 +48,23 @@ function AppRouter() {
               <PrivateRoute>
                 <AccountPage />
               </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <AdminUsersPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/tasks"
+            element={
+              <AdminRoute>
+                <AdminTasksPage />
+              </AdminRoute>
             }
           />
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
+import PageHeader from "../../components/Common/PageHeader";
 
 function LoginPage() {
   const { login } = useAuth();
@@ -36,15 +37,18 @@ function LoginPage() {
   }
 
   return (
-    <section className="max-w-lg mx-auto bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-      <h1 className="text-2xl font-semibold mb-2">Login</h1>
-      <p className="text-slate-600 mb-6">Access your TeamTrack workspace.</p>
+    <section className="mx-auto max-w-lg rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-[0_6px_24px_rgba(15,23,42,0.06)] md:p-8 dark:border-slate-700 dark:bg-slate-900 dark:shadow-[0_8px_26px_rgba(2,6,23,0.5)]">
+      <PageHeader
+        title="Login"
+        subtitle="Access your TeamTrack workspace."
+        className="mb-6"
+      />
 
       <form onSubmit={onSubmit} className="space-y-4">
         <label className="block space-y-1">
           <span className="text-sm font-medium">Email</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 transition focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             name="email"
             type="email"
             required
@@ -56,7 +60,7 @@ function LoginPage() {
         <label className="block space-y-1">
           <span className="text-sm font-medium">Password</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 transition focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             name="password"
             type="password"
             required
@@ -67,7 +71,7 @@ function LoginPage() {
 
         <button
           disabled={submitting}
-          className="w-full rounded-lg bg-slate-900 text-white py-2.5 font-medium disabled:opacity-70"
+          className="w-full rounded-xl bg-slate-900 px-4 py-2 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:opacity-70 dark:bg-blue-600 dark:text-slate-50 dark:hover:bg-blue-500"
           type="submit"
         >
           {submitting ? "Signing in..." : "Sign in"}
@@ -79,9 +83,12 @@ function LoginPage() {
       ) : null}
       {error ? <p className="mt-4 text-red-600 text-sm">{error}</p> : null}
 
-      <p className="mt-6 text-sm text-slate-600">
+      <p className="mt-6 text-sm text-slate-600 dark:text-slate-300">
         No account yet?{" "}
-        <Link to="/register" className="text-slate-900 underline">
+        <Link
+          to="/register"
+          className="text-slate-900 underline decoration-teal-500 dark:text-slate-100"
+        >
           Register here
         </Link>
       </p>
