@@ -1,161 +1,269 @@
-# TeamTrack Codebase Index
+# TeamTrack Codebase Index (Current)
 
-This is an updated context map of the current repository for fast navigation, implementation planning, and debugging.
+This document is a live context map of the current repository for fast onboarding, debugging, and implementation planning.
 
 ## 1) Product Context
 
 - PRD source: `PRD.md`
-- Product intent: role-based task management with authentication, authorization, admin controls, and ownership boundaries.
+- Product direction: role-based team task management with auth, group membership, and protected admin/member actions.
 
-## 2) Current Workspace Structure
+## 2) Workspace Structure
 
 - `Backend/`: Node.js + Express + Mongoose API
-- `Frontend/`: Vite + React application scaffold with starter UI
+- `Frontend/`: Vite + React app with auth, role-gated routes, and themed UI
 - `PRD.md`: product requirements
 
-## 3) Backend Runtime Entry Points
+## 3) Backend Folder Tree (excluding node_modules)
+
+```text
+Backend/
+├── .gitignore
+├── package-lock.json
+├── package.json
+└── src/
+    ├── .env
+    ├── app.js
+    ├── index.js
+    ├── config/
+    │   └── db.js
+    ├── controllers/
+    │   ├── auth.controller.js
+    │   └── group.controller.js
+    ├── middleware/
+    │   ├── admin.middleware.js
+    │   ├── auth.middleware.js
+    │   └── member.middleware.js
+    ├── models/
+    │   ├── Group.model.js
+    │   ├── Invitation.model.js
+    │   ├── Membership.model.js
+    │   ├── Notification.model.js
+    │   ├── Task.model.js
+    │   └── User.model.js
+    ├── routes/
+    │   ├── auth.routes.js
+    │   └── group.routes.js
+    ├── seed/
+    │   ├── seedGroups.js
+    │   ├── seedMembership.js
+    │   └── seedUsers.js
+    └── services/
+        ├── auth.service.js
+        └── group.service.js
+```
+
+## 4) Backend Runtime Entry Points
 
 - Server bootstrap: `Backend/src/index.js`
-  - Loads env with dotenv
-  - Starts server with `app.listen`
+  - Loads env using dotenv (with fallback to `src/.env`)
+  - Starts server with `app.listen(process.env.PORT || 5000)`
 - App composition: `Backend/src/app.js`
-  - Calls DB connection
+  - Connects DB
   - Registers parsers and cookie middleware
-  - Mounts routers on `/api/auth`, `/api/admin`, `/api/groups`
+  - Mounts routers on `/api/auth` and `/api/groups`
 - DB connector: `Backend/src/config/db.js`
 
-## 4) Backend API Surface (Routes)
+## 5) Backend API Surface (Current)
 
 ### Auth Router (`/api/auth`)
 
-- File: `Backend/src/routes/auth.routes.js`
+File: `Backend/src/routes/auth.routes.js`
+
 - `POST /register` -> `userSignUp`
 - `POST /login` -> `userLogin`
-- Guard applied after login/register: `restrictedUserOnly`
+- Protected by `restrictedUserOnly` after public routes
 - `POST /logout` -> `userLogout`
-- `GET /me` -> placeholder text response
-
-### Admin Router (`/api/admin`)
-
-- File: `Backend/src/routes/admin.routes.js`
-- Guards: `restrictedUserOnly`, then `adminOnly`
-- `POST /tasks` -> `adminCreateTask`
-- `GET /tasks` -> placeholder
-- `PATCH /tasks/:id` -> placeholder
-- `DELETE /tasks/:id` -> placeholder
-- `GET /users` -> placeholder
-- `DELETE /users/:id` -> placeholder
+- `GET /me` -> `getMe`
 
 ### Group Router (`/api/groups`)
 
-- File: `Backend/src/routes/group.routes.js`
+File: `Backend/src/routes/group.routes.js`
+
 - Global guard: `restrictedUserOnly`
-- Group guard: `groupedUserOnly` on `/:groupId`
-- Admin-only operations guarded by `adminOnly` on `/:groupId`
-- Group endpoints currently placeholder responses:
-  - `POST /`
-  - `GET /my`
-  - `GET /:groupId`
-  - `POST /:groupId/invite`
-  - `GET /:groupId/members`
-  - `PATCH /:groupId/members/:userId/role`
-  - `DELETE /:groupId/members/:userId`
-  - `POST /:groupId/tasks`
-  - `GET /:groupId/tasks`
-  - `GET /:groupId/tasks/my`
-  - `PATCH /:groupId/tasks/:taskId/status`
+- `POST /` -> `createGroupController`
+- `GET /` -> `getGroupsForUserContoller`
+- `GET /:groupId` -> `isMember` -> `getAllMembersController`
+- `DELETE /:groupId` -> `isAdmin` -> `deleteGroupByIdController`
 
-## 5) Backend Controllers
+## 6) Backend Layering (Current)
 
-- `Backend/src/controllers/auth.controller.js`
-  - Implemented: `userSignUp`, `userLogin`, `userLogout`
-  - Uses `bcrypt` and `jsonwebtoken`
-- `Backend/src/controllers/admin.controller.js`
-  - Implemented: `adminCreateTask`
-  - Stubbed: `taskToEmployee`, `assignmentValidation`
-- `Backend/src/controllers/task.controller.js`
-  - Empty file
+- Routes -> Controllers -> Services pattern is active for auth and group modules.
+- Controllers perform request/response shaping.
+- Services hold business logic and model operations.
 
-## 6) Backend Middleware
+## 7) Backend Controllers
 
-- `Backend/src/middleware/auth.middleware.js`
-  - Cookie token read (`req.cookies.token`)
-  - JWT verify
-  - User lookup and attach to `req.user`
-- `Backend/src/middleware/admin.middleware.js`
-  - Allows only `req.user.role === "admin"`
-- `Backend/src/middleware/groupedUserOnly.middleware.js`
-  - Stubbed pass-through (`next()`)
+### `Backend/src/controllers/auth.controller.js`
 
-## 7) Backend Data Models
+- Delegates signup/login/logout/me to auth service
+- Sets/clears auth cookie around service responses
 
-- `Backend/src/models/User.model.js`
-  - Fields: `name`, `email`, `password`, `role`
-  - Role enum: `admin | employee`
-- `Backend/src/models/Task.model.js`
-  - Fields: `title`, `description`, `status`, `createdBy`, `assignedTo`
-  - Status enum: `pending | in-progress | completed`
-- `Backend/src/models/Group.model.js`
-  - Fields: `name`, `createdBy`
-- `Backend/src/models/Membership.model.js`
-  - Fields: `user`, `group`, `role`
-  - Unique compound index: `{ user: 1, group: 1 }`
+### `Backend/src/controllers/group.controller.js`
 
-## 8) Backend Environment Variables In Use
+- `createGroupController`
+- `getGroupsForUserContoller`
+- `getAllMembersController`
+- `deleteGroupByIdController`
+
+## 8) Backend Services
+
+### `Backend/src/services/auth.service.js`
+
+- Signup (hash + create)
+- Login (verify + JWT issue)
+- Logout payload
+- Authenticated-user payload helper
+
+### `Backend/src/services/group.service.js`
+
+- `createGroupService`: creates group and creates ADMIN membership
+- `getGroupsForUSerService`: finds group memberships for a user
+- `getAllMembersService`: returns ACTIVE memberships with user info
+- `deleteGroupService`: deletes group and linked memberships
+
+## 9) Backend Middleware
+
+### `Backend/src/middleware/auth.middleware.js`
+
+- Reads `req.cookies.token`
+- Verifies JWT
+- Loads user and attaches `req.user`
+
+### `Backend/src/middleware/member.middleware.js`
+
+- Checks membership by `user + group + status: ACTIVE`
+- Allows only group members
+
+### `Backend/src/middleware/admin.middleware.js`
+
+- Checks membership by `user + group + status: ACTIVE`
+- Allows only `role: ADMIN`
+
+## 10) Backend Data Models
+
+### `Backend/src/models/User.model.js`
+
+- Fields: `name`, `email`, `password`
+
+### `Backend/src/models/Group.model.js`
+
+- Fields: `name`, `createdBy`
+- Unique constraints around group naming are present
+
+### `Backend/src/models/Membership.model.js`
+
+- Fields: `user`, `group`, `role`, `status`
+- `role`: `ADMIN | MEMBER`
+- `status`: `PENDING | ACTIVE`
+- Unique compound index: `{ user: 1, group: 1 }`
+
+### `Backend/src/models/Task.model.js`
+
+- Fields: `title`, `description`, `status`, `createdBy`, `assignedTo`, `group`, `isPrivate`
+- Status enum: `TODO | IN_PROGRESS | DONE`
+
+### `Backend/src/models/Invitation.model.js`
+
+- Fields: `email`, `group`, `invitedBy`, `status`
+- Status enum: `PENDING | ACCEPTED | REJECTED`
+
+### `Backend/src/models/Notification.model.js`
+
+- Fields: `user`, `message`, `type`, `isRead`
+
+## 11) Seed Scripts
+
+- `Backend/src/seed/seedUsers.js`: creates 100 members and 10 admin-style users (`a1..a10@g.c`)
+- `Backend/src/seed/seedGroups.js`: creates groups (`g1..g10`) by seeded admin
+- `Backend/src/seed/seedMembership.js`: creates ADMIN + MEMBER ACTIVE memberships
+
+## 12) Backend Environment Variables In Use
 
 - `MONGO_URI`
 - `PORT`
 - `JWT_SECRET`
 
-## 9) Frontend Index
+## 13) Frontend Folder Tree (excluding node_modules, dist)
 
-- Frontend package: `Frontend/package.json`
-  - Stack: Vite + React 19
-  - Scripts: `dev`, `build`, `lint`, `preview`
-- Entry point: `Frontend/src/main.jsx`
-- Root component: `Frontend/src/App.jsx`
-  - Starter Vite demo UI with local counter state
-- Styles:
-  - `Frontend/src/index.css`
-  - `Frontend/src/App.css`
-- Assets:
-  - `Frontend/src/assets/hero.png`
-  - `Frontend/src/assets/react.svg`
-  - `Frontend/src/assets/vite.svg`
+```text
+Frontend/
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── vite.config.js
+├── public/
+│   ├── logo.svg
+│   ├── logoDark.svg
+│   └── user.svg
+└── src/
+    ├── App.jsx
+    ├── main.jsx
+    ├── api/
+    │   ├── admin.js
+    │   ├── auth.js
+    │   ├── groups.js
+    │   └── http.js
+    ├── components/
+    │   ├── Common/
+    │   │   └── PageHeader.jsx
+    │   └── layout/
+    │       ├── Footer.jsx
+    │       └── Navbar.jsx
+    ├── context/
+    │   ├── auth-context.js
+    │   ├── AuthContext.jsx
+    │   ├── theme-context.js
+    │   ├── ThemeContext.jsx
+    │   ├── useAuth.js
+    │   └── useTheme.js
+    ├── pages/
+    │   ├── Admin/
+    │   │   ├── AdminTasksPage.jsx
+    │   │   └── AdminUsersPage.jsx
+    │   ├── Both/
+    │   │   ├── AccountPage.jsx
+    │   │   ├── Dashboard.jsx
+    │   │   └── WorkSpace.jsx
+    │   └── Public/
+    │       ├── AboutPage.jsx
+    │       ├── HomePage.jsx
+    │       ├── LandingPage.jsx
+    │       ├── LoginPage.jsx
+    │       └── RegisterPage.jsx
+    ├── routes/
+    │   ├── AdminRoute.jsx
+    │   ├── AppRouter.jsx
+    │   └── PrivateRoute.jsx
+    └── style/
+        ├── App.css
+        └── index.css
+```
 
-## 10) PRD vs Implementation Snapshot
+## 14) Frontend Runtime and Routing Snapshot
 
-- Auth register/login: implemented at basic level
-- Auth `/me`: placeholder
-- User task CRUD at `/api/tasks` from PRD: not present yet
-- Admin task and user management: mostly placeholder except admin task create
-- Group domain exists as route skeleton; business logic still pending
-- Frontend exists now, but still starter template (not product UI/flows)
+- Entry: `Frontend/src/main.jsx` with `BrowserRouter`
+- Providers in `Frontend/src/App.jsx`: `ThemeProvider` and `AuthProvider`
+- Main route map in `Frontend/src/routes/AppRouter.jsx`
+  - Public: `/`, `/home`, `/about`, `/login`, `/register`
+  - Protected: `/dashboard`, `/workspace`, `/account`
+  - Admin: `/admin/users`, `/admin/tasks`
+- API fetch helper in `Frontend/src/api/http.js`
+  - Uses `credentials: include`
+- Dev proxy in `Frontend/vite.config.js`
+  - `/api` -> `http://localhost:5000`
 
-## 11) Key Gaps and Inconsistencies
+## 15) Current Implementation Snapshot
 
-- Backend startup path mismatch has been fixed to `nodemon src/index.js`.
-- Backend env loading now supports root `.env` with fallback to `Backend/src/.env`.
-- PRD role naming (`user/admin`) differs from model role naming (`employee/admin`)
-- Several handlers return plain strings rather than structured JSON + status codes
+- Auth flow exists end-to-end (register/login/logout/me)
+- Group flow includes create/list/members/delete with member/admin middleware gates
+- Invitation/Notification models exist but are not yet wired to routes/services
+- Admin router from earlier snapshots is no longer mounted in current `app.js`
 
-## 12) Fast Onboarding Read Order
+## 16) High-Value Follow-Ups
 
-1. `PRD.md`
-2. `Backend/src/app.js`
-3. `Backend/src/routes/auth.routes.js`
-4. `Backend/src/routes/admin.routes.js`
-5. `Backend/src/routes/group.routes.js`
-6. `Backend/src/controllers/auth.controller.js`
-7. `Backend/src/controllers/admin.controller.js`
-8. `Backend/src/models/User.model.js`
-9. `Backend/src/models/Task.model.js`
-10. `Frontend/src/main.jsx`
-11. `Frontend/src/App.jsx`
-
-## 13) Suggested Next Reindex Targets
-
-- Add an endpoint-by-endpoint implementation matrix (implemented, placeholder, missing)
-- Add request/response contracts per endpoint
-- Add auth and role decision table per route
-- Add startup/runbook section for backend and frontend commands
+1. Add API contract section (request/response examples per endpoint)
+2. Add middleware decision matrix (who can call what)
+3. Wire invitation + notification modules into routes/services
+4. Add test coverage map (unit + integration)

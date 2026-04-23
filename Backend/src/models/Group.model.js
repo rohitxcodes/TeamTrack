@@ -5,7 +5,7 @@ const groupSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      trim: true,
+      unique: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +13,8 @@ const groupSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+groupSchema.index({ name: 1, createdBy: 1 }, { unique: true });
 
 module.exports = mongoose.model("Group", groupSchema);

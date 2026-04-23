@@ -1,5 +1,5 @@
 const Membership = require("../models/Membership.model");
-async function isAdmin(req, res, next) {
+async function isMember(req, res, next) {
   const userId = req.user._id;
   const groupId = req.params.groupId;
   try {
@@ -8,15 +8,15 @@ async function isAdmin(req, res, next) {
       group: groupId,
       status: "ACTIVE",
     });
-    if (!membership || membership.role !== "ADMIN") {
+    if (!membership) {
       return res
         .status(403)
-        .json({ message: "Only admins can perform this action" });
+        .json({ message: "Access denied: not a group member" });
     }
     next();
   } catch (err) {
-    console.error("Error in isAdmin middleware:", err);
+    console.error("Error in isMember middleware:", err);
     return res.status(500).json({ message: "Server error" });
   }
 }
-module.exports = isAdmin;
+module.exports = isMember;

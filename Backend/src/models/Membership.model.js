@@ -7,21 +7,28 @@ const membershipSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     group: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Group",
       required: true,
     },
+
     role: {
       type: String,
-      enum: ["admin", "member"],
-      default: "member",
+      enum: ["ADMIN", "MEMBER"],
+      default: "MEMBER",
+    },
+
+    status: {
+      type: String,
+      enum: ["PENDING", "ACTIVE"],
+      default: "PENDING",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-// prevent duplicate membership
 membershipSchema.index({ user: 1, group: 1 }, { unique: true });
 
 module.exports = mongoose.model("Membership", membershipSchema);

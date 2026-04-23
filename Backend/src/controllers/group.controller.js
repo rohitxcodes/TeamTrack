@@ -1,97 +1,108 @@
 const {
-  createGroup,
-  getMyGroups,
-  getGroupDetails,
-  getMyTasks,
-  updateTaskStatus,
-  inviteUser,
-  getMembers,
-  changeMemberRole,
-  removeMember,
-  adminCreateGroupTask,
-  adminGetGroupTasks,
-  getTaskDetails,
+  createGroupService,
+  getGroupsForUSerService,
+  deleteGroupService,
+  getAllMembersService,
+  removeMemberService,
 } = require("../services/group.service");
-
-function createGroupController(req, res) {
-  const response = createGroup(req.body, req.user);
-  return res.status(response.status).json(response.body);
+const { inviteUserToGroupService } = require("../services/invitation.service");
+async function createGroupController(req, res) {
+  try {
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: "Group name is required" });
+    }
+    const userId = req.user._id;
+    const response = await createGroupService({ name, userId });
+    return res.status(201).json({
+      message: "Group Created",
+      data: response,
+    });
+  } catch (err) {
+    if (err.status == 409) {
+      return res.status(409).json({ message: err.message });
+    }
+    return res.status(500).json({
+      message: "Error in Group Creation",
+    });
+  }
+}
+async function getAllMembersController(req, res) {
+  try {
+    const { groupId } = req.params;
+    const members = await getAllMembersService(groupId);
+    return res.status(200).json({ members });
+  } catch (err) {
+    console.error("Error in fetching group members:", err);
+    return res.status(500).json({ message: "Error in fetching group members" });
+  }
+}
+async function getGroupsForUserContoller(req, res) {
+  const userId = req.user._id;
+  try {
+    const groupForUser = await getGroupsForUSerService(userId);
+    if (!groupForUser) {
+      return res.status(404).json({ message: "User is not in any group" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Groups for user are", groupForUser });
+  } catch (err) {
+    console.error("Error fecthing the groups for user", err);
+    return res
+      .status(500)
+      .json({ message: "Error fecthing the groups for user" });
+  }
+}
+async function deleteGroupByIdController(req, res) {
+  const { groupId } = req.params;
+  try {
+    if (!groupId) {
+      return res.status(400).json({ message: "group id is empty" });
+    }
+    const deleteGroup = await deleteGroupService(groupId);
+    return res.status(200).json({ message: "Group deleted" });
+  } catch (err) {
+    console.error("Group was not deleted", err);
+    return res.status(500).json("Error in deleting the group");
+  }
 }
 
-function getMyGroupsController(req, res) {
-  const response = getMyGroups(req.user);
-  return res.status(response.status).json(response.body);
+async function inviteUserToGroupController(req, res) {
+  try {
+    const { groupId } = req.params;
+    const { email } = req.body;
+    const invitedBy = req.user._id;
+
+    const invitation = await inviteUserToGroupService({
+      groupId,
+      email,
+      invitedBy,
+    });
+
+    return res.status(201).json({ message: "Invitation created", invitation });
+  } catch (err) {
+    return res.status(500).json({ message: err.message || "Invite failed" });
+  }
 }
 
-function getGroupDetailsController(req, res) {
-  const response = getGroupDetails(req.params.groupId, req.user);
-  return res.status(response.status).json(response.body);
-}
-
-function getMyTasksController(req, res) {
-  const response = getMyTasks(req.params.groupId, req.user);
-  return res.status(response.status).json(response.body);
-}
-
-function updateTaskStatusController(req, res) {
-  const response = updateTaskStatus(
-    req.params.groupId,
-    req.params.taskId,
-    req.body,
-  );
-  return res.status(response.status).json(response.body);
-}
-
-function inviteUserController(req, res) {
-  const response = inviteUser(req.params.groupId, req.body);
-  return res.status(response.status).json(response.body);
-}
-
-function getMembersController(req, res) {
-  const response = getMembers(req.params.groupId);
-  return res.status(response.status).json(response.body);
-}
-
-function changeMemberRoleController(req, res) {
-  const response = changeMemberRole(
-    req.params.groupId,
-    req.params.userId,
-    req.body,
-  );
-  return res.status(response.status).json(response.body);
-}
-
-function removeMemberController(req, res) {
-  const response = removeMember(req.params.groupId, req.params.userId);
-  return res.status(response.status).json(response.body);
-}
-
-function adminCreateGroupTaskController(req, res) {
-  const response = adminCreateGroupTask(req.params.groupId, req.body, req.user);
-  return res.status(response.status).json(response.body);
-}
-
-function adminGetGroupTasksController(req, res) {
-  const response = adminGetGroupTasks(req.params.groupId);
-  return res.status(response.status).json(response.body);
-}
-
-function getTaskDetailsController(req, res) {
-  const response = getTaskDetails(req.params.groupId, req.params.taskId);
-  return res.status(response.status).json(response.body);
+async function removeMemberFromGroupController(req, res) {
+  try {
+    const { groupId, userId } = req.params;
+    const result = await removeMemberService({ groupId, userId });
+    return res.status(200).json({ message: "Member removed", data: result });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: err.message || "Remove member failed" });
+  }
 }
 
 module.exports = {
   createGroupController,
-  getMyGroupsController,
-  getGroupDetailsController,
-  getMyTasksController,
-  updateTaskStatusController,
-  inviteUserController,
-  getMembersController,
-  changeMemberRoleController,
-  removeMemberController,
-  adminCreateGroupTaskController,
-  adminGetGroupTasksController,
-  getTaskDetailsController,
+  getGroupsForUserContoller,
+  getAllMembersController,
+  deleteGroupByIdController,
+  inviteUserToGroupController,
+  removeMemberFromGroupController,
 };
