@@ -27,6 +27,7 @@ async function inviteUserController(req, res) {
 async function getMyInvitationsController(req, res) {
   try {
     const email = req.user.email;
+    console.log(email);
     const invitations = await getMyInvitationsService({ email });
     return res.status(200).json({ invitations });
   } catch (err) {

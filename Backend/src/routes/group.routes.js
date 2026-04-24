@@ -10,11 +10,12 @@ const {
   inviteUserToGroupController,
   removeMemberFromGroupController,
 } = require("../controllers/group.controller");
+const isMemberOrAdmin = require("../middleware/both.middleware");
 const router = express.Router();
 router.use(restrictedUserOnly);
 router.post("/", createGroupController);
 router.get("/", getGroupsForUserContoller);
-router.get("/:groupId", isMember, getAllMembersController);
+router.get("/:groupId", isMemberOrAdmin, getAllMembersController);
 router.post("/:groupId/invite", isAdmin, inviteUserToGroupController);
 router.delete(
   "/:groupId/members/:userId",
