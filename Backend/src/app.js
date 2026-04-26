@@ -7,6 +7,8 @@ const restrictedUserOnly = require("./middleware/auth.middleware");
 const authRouter = require("./routes/auth.routes");
 const groupRouter = require("./routes/group.routes");
 const invitationRouter = require("./routes/invitation.routes");
+const taskRouter = require("./routes/task.routes");
+
 const app = express();
 
 connectDB();
@@ -15,9 +17,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-//demo route
 app.use("/api/auth", authRouter);
 app.use("/api/groups", groupRouter);
 app.use("/api/invitations", invitationRouter);
+app.use("/api/tasks/personal", taskRouter);
 
 module.exports = app;

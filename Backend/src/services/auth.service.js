@@ -43,7 +43,6 @@ async function signUpUser({ name, email, password, role }) {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role,
         },
       },
     };
@@ -90,7 +89,6 @@ async function loginUser({ email, password }) {
           id: user._id,
           name: user.name,
           email: user.email,
-          role: user.role,
         },
       },
     };
@@ -116,7 +114,6 @@ function getAuthenticatedUserPayload(user) {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
       },
     },
   };

@@ -72,7 +72,7 @@ async function inviteUserToGroupController(req, res) {
   try {
     const { groupId } = req.params;
     const { email } = req.body;
-    const invitedBy = req.user.id;
+    const invitedBy = req.user._id;
 
     const invitation = await inviteUserToGroupService({
       groupId,

@@ -5,6 +5,12 @@ async function inviteUserToGroupService({ groupId, email, invitedBy }) {
     if (!groupId || !email || !invitedBy) {
       throw new Error("Something is missing");
     }
+    const existing = await Invitation.findOne({
+      email,
+      group: groupId,
+      status: "PENDING",
+    });
+    if (existing) throw new Error("Invitation already pending for this user");
     const invite = await Invitation.create({
       email: email,
       invitedBy: invitedBy,
@@ -23,7 +29,10 @@ async function getMyInvitationsService({ email }) {
     if (!email) {
       throw new Error("Email is required");
     }
-    const invitation = await Invitation.find({ email });
+    const invitation = await Invitation.find({ email }).populate(
+      "group",
+      "name",
+    );
     console.log(invitation);
     return invitation;
   } catch (err) {
@@ -103,6 +112,7 @@ async function rejectInvitationService({ inviteId, user }) {
       { new: true, runValidators: true },
     );
     console.log(update);
+    return update;
   } catch (err) {
     throw new Error("TODO: implement rejectInvitationService");
   }
@@ -111,13 +121,18 @@ async function rejectInvitationService({ inviteId, user }) {
 async function cancelInvitationService({ inviteId, user }) {
   // TODO: implement cancel flow.
   // Steps: find invitation, verify inviter/admin privileges, cancel/delete invitation.
-  if (!inviteId || !user) throw new Error("invalid inviteId or user");
   try {
+    if (!inviteId || !user) throw new Error("invalid inviteId or user");
+
     const invite = await Invitation.findById(inviteId);
-    if (!invite) {
-      throw new Error("Invitation not found");
+    if (!invite) throw new Error("Invitation not found");
+
+    if (invite.invitedBy.toString() !== user._id.toString()) {
+      throw new Error("Not authorized to cancel this invitation");
     }
+
     await Invitation.findByIdAndDelete(inviteId);
+    return invite;
   } catch (err) {
     throw new Error("ERROR:Invite not canceled");
   }
