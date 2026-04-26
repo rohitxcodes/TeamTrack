@@ -57,9 +57,21 @@ async function deleteGroupService(groupId) {
 }
 
 async function removeMemberService({ groupId, userId }) {
-  // TODO: implement member removal logic.
-  // Suggested: find membership by group + user, then delete/soft-delete.
-  throw new Error("TODO: implement removeMemberService");
+  if (!groupId || !userId) {
+    throw new Error("Group ID and User ID are required");
+  }
+  try {
+    const membership = await Membership.findOne({
+      group: groupId,
+      user: userId,
+    });
+    if (!membership) {
+      throw new Error("Member not found in the specified group");
+    }
+    await Membership.deleteOne({ group: groupId, user: userId });
+  } catch (err) {
+    throw new Error("Failed to remove member from group: " + err.message);
+  }
 }
 
 module.exports = {

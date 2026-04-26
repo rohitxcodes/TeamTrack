@@ -11,7 +11,6 @@ const taskRouter = require("./routes/task.routes");
 
 const app = express();
 
-connectDB();
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
