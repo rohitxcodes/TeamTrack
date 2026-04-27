@@ -1,27 +1,15 @@
-import { apiFetch } from "./http";
-
-export function registerUser(data) {
-  return apiFetch("/api/auth/register", {
-    method: "POST",
-    body: data,
-  });
+export async function registerUser() {
+  throw new Error("TODO: implement registerUser in Frontend/src/api/auth.js");
 }
 
-export function loginUser(data) {
-  return apiFetch("/api/auth/login", {
-    method: "POST",
-    body: data,
-  });
+export async function loginUser() {
+  throw new Error("TODO: implement loginUser in Frontend/src/api/auth.js");
 }
 
-export function logoutUser() {
-  return apiFetch("/api/auth/logout", {
-    method: "POST",
-  });
+export async function logoutUser() {
+  throw new Error("TODO: implement logoutUser in Frontend/src/api/auth.js");
 }
 
-export function getMe() {
-  return apiFetch("/api/auth/me", {
-    method: "GET",
-  });
+export async function getMe() {
+  throw new Error("TODO: implement getMe in Frontend/src/api/auth.js");
 }

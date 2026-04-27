@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/useAuth";
+import { Link } from "react-router-dom";
 import PageHeader from "../../components/Common/PageHeader";
 
 function RegisterPage() {
-  const { register } = useAuth();
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,7 +10,6 @@ function RegisterPage() {
     role: "employee",
   });
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   function onChange(event) {
@@ -24,22 +20,10 @@ function RegisterPage() {
   async function onSubmit(event) {
     event.preventDefault();
     setSubmitting(true);
-    setError("");
     setMessage("");
 
-    try {
-      const response = await register(formData);
-      setMessage(
-        typeof response === "string" ? response : "Registration successful",
-      );
-      setTimeout(() => {
-        navigate("/login", { replace: true });
-      }, 700);
-    } catch (err) {
-      setError(err.message || "Registration failed");
-    } finally {
-      setSubmitting(false);
-    }
+    setMessage("Logic removed: implement registration flow yourself.");
+    setSubmitting(false);
   }
 
   return (
@@ -111,8 +95,6 @@ function RegisterPage() {
       {message ? (
         <p className="mt-4 text-emerald-700 text-sm">{message}</p>
       ) : null}
-      {error ? <p className="mt-4 text-red-600 text-sm">{error}</p> : null}
-
       <p className="mt-6 text-sm tt-muted">
         Already registered?{" "}
         <Link

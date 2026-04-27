@@ -1,7 +1,3 @@
-import { apiFetch } from "./http";
-
-export function getMyGroups() {
-  return apiFetch("/api/groups/my", {
-    method: "GET",
-  });
+export async function getMyGroups() {
+  throw new Error("TODO: implement getMyGroups in Frontend/src/api/groups.js");
 }

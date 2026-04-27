@@ -1,18 +1,11 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/useAuth";
+import { Link } from "react-router-dom";
 import PageHeader from "../../components/Common/PageHeader";
 
 function LoginPage() {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const redirectPath = location.state?.from?.pathname || "/dashboard";
 
   function onChange(event) {
     const { name, value } = event.target;
@@ -22,18 +15,10 @@ function LoginPage() {
   async function onSubmit(event) {
     event.preventDefault();
     setSubmitting(true);
-    setError("");
     setMessage("");
 
-    try {
-      const response = await login(formData);
-      setMessage(typeof response === "string" ? response : "Login successful");
-      navigate(redirectPath, { replace: true });
-    } catch (err) {
-      setError(err.message || "Login failed");
-    } finally {
-      setSubmitting(false);
-    }
+    setMessage("Logic removed: implement login submit flow yourself.");
+    setSubmitting(false);
   }
 
   return (
@@ -81,8 +66,6 @@ function LoginPage() {
       {message ? (
         <p className="mt-4 text-emerald-700 text-sm">{message}</p>
       ) : null}
-      {error ? <p className="mt-4 text-red-600 text-sm">{error}</p> : null}
-
       <p className="mt-6 text-sm tt-muted">
         No account yet?{" "}
         <Link

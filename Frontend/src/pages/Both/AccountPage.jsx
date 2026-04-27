@@ -1,14 +1,14 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useAuth } from "../../context/useAuth";
 import PageHeader from "../../components/Common/PageHeader";
 
 function AccountPage() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
 
   async function onLogout() {
     await logout();
-    navigate("/login", { replace: true });
+    setMessage("Logic removed: implement logout redirect yourself.");
   }
 
   return (
@@ -41,6 +41,10 @@ function AccountPage() {
       >
         Logout
       </button>
+
+      {message ? (
+        <p className="mt-4 text-sm text-amber-700">{message}</p>
+      ) : null}
     </section>
   );
 }

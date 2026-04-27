@@ -1,32 +1,25 @@
-import { apiFetch } from "./http";
-
-export function createAdminTask(data) {
-  return apiFetch("/api/admin/tasks", {
-    method: "POST",
-    body: data,
-  });
+export async function createAdminTask() {
+  throw new Error(
+    "TODO: implement createAdminTask in Frontend/src/api/admin.js",
+  );
 }
 
-export function getAdminUsers() {
-  return apiFetch("/api/admin/users", {
-    method: "GET",
-  });
+export async function getAdminUsers() {
+  throw new Error("TODO: implement getAdminUsers in Frontend/src/api/admin.js");
 }
 
-export function deleteAdminUser(userId) {
-  return apiFetch(`/api/admin/users/${userId}`, {
-    method: "DELETE",
-  });
+export async function deleteAdminUser() {
+  throw new Error(
+    "TODO: implement deleteAdminUser in Frontend/src/api/admin.js",
+  );
 }
 
-export function getAdminTasks() {
-  return apiFetch("/api/admin/tasks", {
-    method: "GET",
-  });
+export async function getAdminTasks() {
+  throw new Error("TODO: implement getAdminTasks in Frontend/src/api/admin.js");
 }
 
-export function deleteAdminTask(taskId) {
-  return apiFetch(`/api/admin/tasks/${taskId}`, {
-    method: "DELETE",
-  });
+export async function deleteAdminTask() {
+  throw new Error(
+    "TODO: implement deleteAdminTask in Frontend/src/api/admin.js",
+  );
 }

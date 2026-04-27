@@ -1,11 +1,10 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { useTheme } from "../../context/useTheme";
 import userIcon from "../../../public/user.svg";
 function Navbar() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
 
   const navLinkClass = ({ isActive }) =>
     `rounded-lg px-2.5 py-1.5 transition ${
@@ -20,7 +19,6 @@ function Navbar() {
 
   async function onLogout() {
     await logout();
-    navigate("/login");
   }
 
   return (

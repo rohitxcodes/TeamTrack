@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { deleteAdminTask, getAdminTasks } from "../../api/admin";
+import { useState } from "react";
 import PageHeader from "../../components/Common/PageHeader";
 
 function extractTasks(payload) {
@@ -14,54 +13,26 @@ function getTaskId(task, index) {
 }
 
 function AdminTasksPage() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks] = useState([
+    {
+      _id: "t-1",
+      title: "Sample task",
+      description: "UI only placeholder row",
+      status: "pending",
+    },
+    {
+      _id: "t-2",
+      title: "Another task",
+      description: "Replace this with API data later",
+      status: "in-progress",
+    },
+  ]);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [deletingId, setDeletingId] = useState("");
+  const [loading] = useState(false);
 
-  async function loadTasks() {
-    setLoading(true);
-    setError("");
-    setMessage("");
-
-    try {
-      const response = await getAdminTasks();
-      const list = extractTasks(response);
-      setTasks(list);
-      if (list.length === 0) {
-        setMessage(response?.message || "No tasks returned by backend yet.");
-      }
-    } catch (err) {
-      setError(err.message || "Failed to load tasks");
-    } finally {
-      setLoading(false);
-    }
+  function onDeleteTask() {
+    setMessage("Logic removed: implement delete task API yourself.");
   }
-
-  async function onDeleteTask(taskId) {
-    if (!taskId) return;
-
-    setDeletingId(taskId);
-    setError("");
-    setMessage("");
-
-    try {
-      const response = await deleteAdminTask(taskId);
-      setTasks((prev) =>
-        prev.filter((task, idx) => getTaskId(task, idx) !== taskId),
-      );
-      setMessage(response?.message || "Task deleted");
-    } catch (err) {
-      setError(err.message || "Failed to delete task");
-    } finally {
-      setDeletingId("");
-    }
-  }
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
 
   return (
     <section className="space-y-6">
@@ -73,7 +44,9 @@ function AdminTasksPage() {
           />
           <button
             type="button"
-            onClick={loadTasks}
+            onClick={() =>
+              setMessage("Logic removed: implement refresh tasks yourself.")
+            }
             className="tt-btn-secondary"
           >
             {loading ? "Refreshing..." : "Refresh"}
@@ -86,7 +59,6 @@ function AdminTasksPage() {
           <ul className="divide-y divide-slate-200">
             {tasks.map((task, index) => {
               const taskId = getTaskId(task, index);
-              const isDeleting = deletingId === taskId;
               return (
                 <li
                   key={taskId}
@@ -106,10 +78,9 @@ function AdminTasksPage() {
                   <button
                     type="button"
                     onClick={() => onDeleteTask(taskId)}
-                    disabled={isDeleting}
                     className="tt-btn-danger disabled:opacity-60"
                   >
-                    {isDeleting ? "Deleting..." : "Delete"}
+                    Delete
                   </button>
                 </li>
               );
@@ -124,7 +95,6 @@ function AdminTasksPage() {
         {message ? (
           <p className="mt-4 text-sm text-emerald-700">{message}</p>
         ) : null}
-        {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
       </div>
     </section>
   );

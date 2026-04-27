@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { createAdminTask } from "../../api/admin";
 import { useAuth } from "../../context/useAuth";
 
 function Dashboard() {
-  const { user, refreshMe } = useAuth();
+  const { user } = useAuth();
   const [boardTasks, setBoardTasks] = useState([
     {
       id: "KAN-11",
@@ -41,22 +40,18 @@ function Dashboard() {
     event.preventDefault();
     setMessage("");
     setError("");
-    try {
-      const response = await createAdminTask(taskForm);
-      setMessage(typeof response === "string" ? response : "Task created");
-      setBoardTasks((prev) => [
-        {
-          id: `KAN-${prev.length + 100}`,
-          title: taskForm.title,
-          status: taskForm.status,
-          assignee: user?.name?.slice(0, 2)?.toUpperCase() || "ME",
-        },
-        ...prev,
-      ]);
-      setTaskForm({ title: "", description: "", status: "pending" });
-    } catch (err) {
-      setError(err.message || "Task creation failed");
-    }
+
+    setBoardTasks((prev) => [
+      {
+        id: `KAN-${prev.length + 100}`,
+        title: taskForm.title,
+        status: taskForm.status,
+        assignee: user?.name?.slice(0, 2)?.toUpperCase() || "ME",
+      },
+      ...prev,
+    ]);
+    setTaskForm({ title: "", description: "", status: "pending" });
+    setMessage("Logic removed: connect this form to your own API later.");
   }
 
   const columns = [
@@ -135,7 +130,12 @@ function Dashboard() {
             <div className="flex items-center gap-2 text-xs">
               <button
                 type="button"
-                onClick={refreshMe}
+                onClick={() => {
+                  setMessage(
+                    "Logic removed: implement refresh session yourself.",
+                  );
+                  setError("");
+                }}
                 className="rounded-md border border-slate-700 px-3 py-2 text-slate-300 hover:bg-slate-800"
               >
                 Refresh session

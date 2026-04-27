@@ -1,78 +1,35 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  getMe,
-  loginUser as loginApi,
-  logoutUser as logoutApi,
-  registerUser as registerApi,
-} from "../api/auth";
+import { useMemo, useState } from "react";
 import { AuthContext } from "./auth-context";
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState({
+    name: "Student User",
+    role: "admin",
+    email: "student@example.com",
+  });
+  const [loading] = useState(false);
 
-  const normalizeUser = useCallback((payload) => {
-    if (!payload || typeof payload !== "object") return null;
-    if (payload.user && typeof payload.user === "object") return payload.user;
-    if (
-      payload.id ||
-      payload._id ||
-      payload.email ||
-      payload.role ||
-      payload.name
-    )
-      return payload;
-    return null;
-  }, []);
+  async function login() {
+    setUser({
+      name: "Student User",
+      role: "admin",
+      email: "student@example.com",
+    });
+    return { message: "TODO: implement login logic" };
+  }
 
-  const refreshMe = useCallback(async () => {
-    try {
-      const meResponse = await getMe();
-      if (typeof meResponse === "string") {
-        // Backend currently returns placeholder text for /me.
-        setUser(
-          (prev) => prev || { name: "User", role: "employee", raw: meResponse },
-        );
-      } else {
-        setUser(normalizeUser(meResponse));
-      }
-    } catch {
-      setUser(null);
-    }
-  }, [normalizeUser]);
+  async function register() {
+    return { message: "TODO: implement register logic" };
+  }
 
-  const login = useCallback(
-    async (credentials) => {
-      const response = await loginApi(credentials);
-      const normalizedFromLogin = normalizeUser(response);
-      if (normalizedFromLogin) {
-        setUser(normalizedFromLogin);
-      }
-      await refreshMe();
-      return response;
-    },
-    [normalizeUser, refreshMe],
-  );
+  async function logout() {
+    setUser(null);
+    return { message: "TODO: implement logout logic" };
+  }
 
-  const register = useCallback(async (data) => {
-    return registerApi(data);
-  }, []);
-
-  const logout = useCallback(async () => {
-    try {
-      await logoutApi();
-    } finally {
-      setUser(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    async function init() {
-      await refreshMe();
-      setLoading(false);
-    }
-    init();
-  }, [refreshMe]);
+  async function refreshMe() {
+    return { message: "TODO: implement refreshMe logic" };
+  }
 
   const value = useMemo(() => {
     return { user, loading, login, register, logout, refreshMe };

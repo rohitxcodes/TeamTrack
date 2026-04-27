@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { getMyGroups } from "../../api/groups";
 import PageHeader from "../../components/Common/PageHeader";
 
 function WorkSpace() {
@@ -10,19 +9,17 @@ function WorkSpace() {
   async function fetchGroups() {
     setLoading(true);
     setError("");
-    setResult("");
-    try {
-      const response = await getMyGroups();
-      const normalized =
-        typeof response === "string"
-          ? response
-          : JSON.stringify(response, null, 2);
-      setResult(normalized);
-    } catch (err) {
-      setError(err.message || "Failed to load groups");
-    } finally {
-      setLoading(false);
-    }
+    setResult(
+      JSON.stringify(
+        {
+          message: "Logic removed: implement group fetch here.",
+          hint: "Call your own API and replace this sample payload.",
+        },
+        null,
+        2,
+      ),
+    );
+    setLoading(false);
   }
 
   return (

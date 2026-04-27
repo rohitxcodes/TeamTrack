@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { deleteAdminUser, getAdminUsers } from "../../api/admin";
+import { useState } from "react";
 import PageHeader from "../../components/Common/PageHeader";
 
 function extractUsers(payload) {
@@ -14,54 +13,26 @@ function getUserId(user, index) {
 }
 
 function AdminUsersPage() {
-  const [users, setUsers] = useState([]);
+  const [users] = useState([
+    {
+      _id: "u-1",
+      name: "Student One",
+      email: "one@example.com",
+      role: "admin",
+    },
+    {
+      _id: "u-2",
+      name: "Student Two",
+      email: "two@example.com",
+      role: "employee",
+    },
+  ]);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [deletingId, setDeletingId] = useState("");
+  const [loading] = useState(false);
 
-  async function loadUsers() {
-    setLoading(true);
-    setError("");
-    setMessage("");
-
-    try {
-      const response = await getAdminUsers();
-      const list = extractUsers(response);
-      setUsers(list);
-      if (list.length === 0) {
-        setMessage(response?.message || "No users returned by backend yet.");
-      }
-    } catch (err) {
-      setError(err.message || "Failed to load users");
-    } finally {
-      setLoading(false);
-    }
+  function onDeleteUser() {
+    setMessage("Logic removed: implement delete user API yourself.");
   }
-
-  async function onDeleteUser(userId) {
-    if (!userId) return;
-
-    setDeletingId(userId);
-    setError("");
-    setMessage("");
-
-    try {
-      const response = await deleteAdminUser(userId);
-      setUsers((prev) =>
-        prev.filter((user, idx) => getUserId(user, idx) !== userId),
-      );
-      setMessage(response?.message || "User deleted");
-    } catch (err) {
-      setError(err.message || "Failed to delete user");
-    } finally {
-      setDeletingId("");
-    }
-  }
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
 
   return (
     <section className="space-y-6">
@@ -73,7 +44,9 @@ function AdminUsersPage() {
           />
           <button
             type="button"
-            onClick={loadUsers}
+            onClick={() =>
+              setMessage("Logic removed: implement refresh users yourself.")
+            }
             className="tt-btn-secondary"
           >
             {loading ? "Refreshing..." : "Refresh"}
@@ -86,7 +59,6 @@ function AdminUsersPage() {
           <ul className="divide-y divide-slate-200">
             {users.map((user, index) => {
               const userId = getUserId(user, index);
-              const isDeleting = deletingId === userId;
               return (
                 <li
                   key={userId}
@@ -106,10 +78,9 @@ function AdminUsersPage() {
                   <button
                     type="button"
                     onClick={() => onDeleteUser(userId)}
-                    disabled={isDeleting}
                     className="tt-btn-danger disabled:opacity-60"
                   >
-                    {isDeleting ? "Deleting..." : "Delete"}
+                    Delete
                   </button>
                 </li>
               );
@@ -124,7 +95,6 @@ function AdminUsersPage() {
         {message ? (
           <p className="mt-4 text-sm text-emerald-700">{message}</p>
         ) : null}
-        {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
       </div>
     </section>
   );
