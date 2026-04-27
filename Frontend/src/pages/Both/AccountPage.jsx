@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { useAuth } from "../../context/useAuth";
 import PageHeader from "../../components/Common/PageHeader";
 
 function AccountPage() {
-  const { user, logout } = useAuth();
+  const user = { name: "Student User", role: "admin" };
   const [message, setMessage] = useState("");
 
-  async function onLogout() {
-    await logout();
+  function onLogout() {
     setMessage("Logic removed: implement logout redirect yourself.");
   }
 

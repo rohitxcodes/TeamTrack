@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useAuth } from "../../context/useAuth";
 
 function Dashboard() {
-  const { user } = useAuth();
+  const user = { name: "Student User", role: "admin" };
   const [boardTasks, setBoardTasks] = useState([
     {
       id: "KAN-11",

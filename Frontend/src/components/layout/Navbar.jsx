@@ -1,9 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../../context/useAuth";
 import { useTheme } from "../../context/useTheme";
 import userIcon from "../../../public/user.svg";
 function Navbar() {
-  const { user, logout } = useAuth();
+  const user = { name: "Student User", role: "admin" };
   const { theme, toggleTheme } = useTheme();
 
   const navLinkClass = ({ isActive }) =>
@@ -17,9 +16,7 @@ function Navbar() {
           : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
     }`;
 
-  async function onLogout() {
-    await logout();
-  }
+  function onLogout() {}
 
   return (
     <header className="tt-navbar sticky top-0 z-20 border-b border-slate-200/90 backdrop-blur-md">

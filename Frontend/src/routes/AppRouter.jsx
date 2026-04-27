@@ -1,6 +1,4 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute";
-import AdminRoute from "./AdminRoute";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import LandingPage from "../pages/Public/LandingPage";
@@ -26,47 +24,12 @@ function AppRouter() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/workspace"
-            element={
-              <PrivateRoute>
-                <WorkSpace />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account"
-            element={
-              <PrivateRoute>
-                <AccountPage />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/workspace" element={<WorkSpace />} />
+          <Route path="/account" element={<AccountPage />} />
 
-          <Route
-            path="/admin/users"
-            element={
-              <AdminRoute>
-                <AdminUsersPage />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/tasks"
-            element={
-              <AdminRoute>
-                <AdminTasksPage />
-              </AdminRoute>
-            }
-          />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
+          <Route path="/admin/tasks" element={<AdminTasksPage />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
