@@ -1,9 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
 import { useTheme } from "../../context/useTheme";
+import { useAuth } from "../../context/useAuth";
 import userIcon from "../../../public/user.svg";
 function Navbar() {
-  const user = { name: "Student User", role: "admin" };
   const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated, user } = useAuth();
 
   const navLinkClass = ({ isActive }) =>
     `rounded-lg px-2.5 py-1.5 transition ${
@@ -15,9 +16,6 @@ function Navbar() {
           ? "text-slate-300 hover:text-slate-50 hover:bg-slate-800"
           : "text-slate-700 hover:text-slate-900 hover:bg-slate-100"
     }`;
-
-  function onLogout() {}
-
   return (
     <header className="tt-navbar sticky top-0 z-20 border-b border-slate-200/90 backdrop-blur-md">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
@@ -34,61 +32,49 @@ function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-2 text-sm flex-wrap justify-end">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="tt-btn-secondary"
-            aria-label="Toggle color theme"
-          >
-            {theme === "dark" ? "Light" : "Dark"}
-          </button>
-
           <NavLink to="/home" className={navLinkClass}>
             Home
           </NavLink>
+          <>
+            <NavLink to="/workspace" className={navLinkClass}>
+              Workspace
+            </NavLink>
 
-          {user ? (
-            <>
-              <NavLink to="/dashboard" className={navLinkClass}>
-                Dashboard
-              </NavLink>
-              <NavLink to="/workspace" className={navLinkClass}>
-                Workspace
-              </NavLink>
-              <NavLink to="/about" className={navLinkClass}>
-                About
-              </NavLink>
+            <NavLink to="/about" className={navLinkClass}>
+              About
+            </NavLink>
+
+            {isAuthenticated ? (
               <NavLink to="/account" className={navLinkClass}>
-                <img src={userIcon} alt="account" className="w-7 h-7" />
+                <img
+                  src={userIcon}
+                  alt={user?.name ? `${user.name} account` : "account"}
+                  className="w-6 h-6"
+                />
               </NavLink>
-              {user?.role === "admin" ? (
-                <>
-                  <NavLink to="/admin/users" className={navLinkClass}>
-                    Admin Users
-                  </NavLink>
-                  <NavLink to="/admin/tasks" className={navLinkClass}>
-                    Admin Tasks
-                  </NavLink>
-                </>
-              ) : null}
-              <button
-                type="button"
-                onClick={onLogout}
-                className="tt-btn-secondary"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <NavLink to="/login" className={navLinkClass}>
-                Login
-              </NavLink>
-              <NavLink to="/register" className="tt-btn-primary">
-                Register
-              </NavLink>
-            </>
-          )}
+            ) : (
+              <>
+                <NavLink to="/login" className={navLinkClass}>
+                  Login
+                </NavLink>
+                <NavLink to="/register" className="tt-btn-primary">
+                  Register
+                </NavLink>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="tt-btn-secondary"
+              aria-label="Toggle color theme"
+            >
+              <img
+                src={theme === "dark" ? "/toggle-sun.svg " : "/toggle-moon.svg"}
+                alt="TeamTrack"
+                className="h-6 w-6 object-contain"
+              />
+            </button>
+          </>
         </nav>
       </div>
     </header>

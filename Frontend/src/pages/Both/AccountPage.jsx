@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageHeader from "../../components/Common/PageHeader";
+import { useAuth } from "../../context/useAuth";
 
 function AccountPage() {
-  const user = { name: "Student User", role: "admin" };
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-  function onLogout() {
-    setMessage("Logic removed: implement logout redirect yourself.");
+  async function onLogout() {
+    await logout();
+    setMessage("Logged out successfully.");
+    navigate("/login", { replace: true });
   }
 
   return (
@@ -24,13 +29,6 @@ function AccountPage() {
           </dd>
         </div>
       </dl>
-
-      {user?.raw ? (
-        <p className="mt-4 text-xs text-amber-700">
-          Backend /me is returning placeholder text, so user profile data is
-          mocked on client.
-        </p>
-      ) : null}
 
       <button
         type="button"

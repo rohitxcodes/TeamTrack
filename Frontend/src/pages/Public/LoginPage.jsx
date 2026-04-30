@@ -1,11 +1,20 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../components/Common/PageHeader";
+import { useAuth } from "../../context/useAuth";
 
 function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/workspace", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   function onChange(event) {
     const { name, value } = event.target;
@@ -17,10 +26,19 @@ function LoginPage() {
     setSubmitting(true);
     setMessage("");
 
-    setMessage("Logic removed: implement login submit flow yourself.");
-    setSubmitting(false);
+    try {
+      const result = await login(formData);
+      setMessage("Signed in successfully.");
+      navigate("/workspace", { replace: true });
+      console.log("login result", result);
+    } catch (err) {
+      console.error("Login error:", err);
+      const msg = err?.message || err?.error || "Login failed";
+      setMessage(msg);
+    } finally {
+      setSubmitting(false);
+    }
   }
-
   return (
     <section className="tt-card max-w-lg mx-auto p-6 md:p-8">
       <PageHeader

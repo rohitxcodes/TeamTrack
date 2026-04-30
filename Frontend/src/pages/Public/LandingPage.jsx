@@ -22,7 +22,7 @@ function LandingPage() {
         </div>
 
         <div className="hidden lg:flex justify-end pb-8">
-          <div className="tt-landing-illustration tt-card relative w-full max-w-md min-h-[320px] overflow-hidden p-8 flex items-center justify-center backdrop-blur-sm">
+          <div className="tt-landing-illustration tt-card relative w-full max-w-md min-h-80 overflow-hidden p-8 flex items-center justify-center backdrop-blur-sm">
             <div className="tt-landing-illustration-glow absolute inset-0" />
             <img
               src={`https://api.iconify.design/tabler:clipboard-check.svg?color=${iconColor}`}

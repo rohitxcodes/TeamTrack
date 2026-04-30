@@ -15,7 +15,40 @@ async function startServer() {
 
     const PORT = process.env.PORT || 5000;
 
-    app.listen(PORT, () => {
+    const http = require("http");
+    const { Server } = require("socket.io");
+
+    const server = http.createServer(app);
+
+    const io = new Server(server, {
+      cors: {
+        origin: process.env.FRONTEND_URL?.split(",") || "http://localhost:5173",
+        credentials: true,
+      },
+    });
+
+    // expose io to requests via app.locals
+    app.locals.io = io;
+
+    // socket handlers
+    io.on("connection", (socket) => {
+      socket.on("joinGroup", (groupId) => {
+        if (groupId) socket.join(groupId);
+      });
+
+      socket.on("leaveGroup", (groupId) => {
+        if (groupId) socket.leave(groupId);
+      });
+
+      socket.on("chatMessage", (payload) => {
+        // payload: { groupId, text, sender }
+        if (payload?.groupId) {
+          io.to(payload.groupId).emit("chatMessage", payload);
+        }
+      });
+    });
+
+    server.listen(PORT, () => {
       console.log(`Server started at http://localhost:${PORT}`);
     });
   } catch (err) {

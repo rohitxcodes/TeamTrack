@@ -9,8 +9,7 @@ import RegisterPage from "../pages/Public/RegisterPage";
 import Dashboard from "../pages/Both/Dashboard";
 import WorkSpace from "../pages/Both/WorkSpace";
 import AccountPage from "../pages/Both/AccountPage";
-import AdminUsersPage from "../pages/Admin/AdminUsersPage";
-import AdminTasksPage from "../pages/Admin/AdminTasksPage";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 function AppRouter() {
   return (
@@ -24,12 +23,42 @@ function AppRouter() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/workspace" element={<WorkSpace />} />
-          <Route path="/account" element={<AccountPage />} />
-
-          <Route path="/admin/users" element={<AdminUsersPage />} />
-          <Route path="/admin/tasks" element={<AdminTasksPage />} />
+          <Route
+            path="/workspace"
+            element={
+              <ProtectedRoute>
+                <WorkSpace />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workspace/:groupId"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workspace/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={<Navigate to="/workspace" replace />}
+          />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <AccountPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

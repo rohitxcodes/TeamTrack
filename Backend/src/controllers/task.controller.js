@@ -21,6 +21,13 @@ async function createGroupTaskController(req, res) {
       groupId,
       createdBy: req.user._id,
     });
+    // emit to group room that a task was created
+    try {
+      const io = req.app?.locals?.io;
+      if (io) io.to(groupId).emit("taskCreated", { task });
+    } catch (e) {
+      console.error("Socket emit failed (createGroupTask):", e.message);
+    }
     return res.status(201).json({ message: "Task created", task });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
@@ -68,6 +75,13 @@ async function updateGroupTaskController(req, res) {
       membershipRole: req.membership.role,
       userId: req.user._id,
     });
+    // emit to group room that a task was updated
+    try {
+      const io = req.app?.locals?.io;
+      if (io) io.to(groupId).emit("taskUpdated", { task });
+    } catch (e) {
+      console.error("Socket emit failed (updateGroupTask):", e.message);
+    }
     return res.status(200).json({ message: "Task updated", task });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });
@@ -78,6 +92,13 @@ async function deleteGroupTaskController(req, res) {
   try {
     const { groupId, taskId } = req.params;
     await deleteGroupTaskService({ taskId, groupId });
+    // emit deletion to group room
+    try {
+      const io = req.app?.locals?.io;
+      if (io) io.to(groupId).emit("taskDeleted", { taskId });
+    } catch (e) {
+      console.error("Socket emit failed (deleteGroupTask):", e.message);
+    }
     return res.status(200).json({ message: "Task deleted" });
   } catch (err) {
     return res.status(err.status || 500).json({ message: err.message });

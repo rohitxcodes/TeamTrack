@@ -1,19 +1,19 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Footer() {
-  const { pathname } = useLocation();
-  const isPublicFooter = ["/", "/home", "/about"].includes(pathname);
+  // const { pathname } = useLocation();
+  // const isPublicFooter = ["/", "/home", "/about"].includes(pathname);
 
-  if (!isPublicFooter) {
-    return (
-      <footer className="border-t border-slate-200/90 bg-white/70 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-4 py-5 text-xs text-slate-600 flex flex-wrap gap-2 justify-between">
-          <p>TeamTrack Workspace</p>
-          <p>Secure Role-Based Task Management</p>
-        </div>
-      </footer>
-    );
-  }
+  // if (!isPublicFooter) {
+  //   return (
+  //     <footer className="border-t border-slate-200/90 bg-white/70 backdrop-blur-md">
+  //       <div className="max-w-6xl mx-auto px-4 py-5 text-xs text-slate-600 flex flex-wrap gap-2 justify-between">
+  //         <p>TeamTrack Workspace</p>
+  //         <p>Secure Role-Based Task Management</p>
+  //       </div>
+  //     </footer>
+  //   );
+  // }
 
   return (
     <footer className="mt-8 border-t border-[#111827] bg-[#02050b] text-slate-200 font-mono">
