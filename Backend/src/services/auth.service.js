@@ -4,13 +4,18 @@ const User = require("../models/User.model");
 
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 
+function isLocalhostUrl(value) {
+  return typeof value === "string" && /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(value);
+}
+
 function getCookieOptions() {
-  const isProd = process.env.NODE_ENV === "production";
+  const isProdLike =
+    process.env.NODE_ENV === "production" || !isLocalhostUrl(process.env.FRONTEND_URL);
 
   return {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
+    secure: isProdLike,
+    sameSite: isProdLike ? "none" : "lax",
     maxAge: 24 * 60 * 60 * 1000,
   };
 }
