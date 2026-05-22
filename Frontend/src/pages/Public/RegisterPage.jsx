@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../components/Common/PageHeader";
+import { register as registerRequest } from "../../api/auth.api";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -22,8 +23,18 @@ function RegisterPage() {
     setSubmitting(true);
     setMessage("");
 
-    setMessage("Logic removed: implement registration flow yourself.");
-    setSubmitting(false);
+    try {
+      const response = await registerRequest(formData);
+      setMessage(response?.message || "Registered successfully.");
+      // redirect to login after successful registration
+      navigate("/login", { replace: true });
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message || err?.message || "Registration failed";
+      setMessage(msg);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
