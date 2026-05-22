@@ -9,7 +9,6 @@ function RegisterPage() {
     name: "",
     email: "",
     password: "",
-    role: "employee",
   });
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -92,18 +91,7 @@ function RegisterPage() {
           />
         </label>
 
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">Role</span>
-          <select
-            className="tt-input"
-            name="role"
-            value={formData.role}
-            onChange={onChange}
-          >
-            <option value="employee">Employee</option>
-            <option value="admin">Admin</option>
-          </select>
-        </label>
+        {/* Role removed from registration */}
 
         <button
           disabled={submitting}
