@@ -9,6 +9,7 @@ const authRouter = require("./routes/auth.routes");
 const groupRouter = require("./routes/group.routes");
 const invitationRouter = require("./routes/invitation.routes");
 const taskRouter = require("./routes/task.routes");
+const { buildCorsOriginChecker } = require("./config/cors");
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL?.split(",") || "http://localhost:5173",
+    origin: buildCorsOriginChecker(),
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],

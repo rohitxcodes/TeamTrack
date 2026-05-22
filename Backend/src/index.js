@@ -2,6 +2,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const app = require("./app");
+const { buildCorsOriginChecker } = require("./config/cors");
 
 // load env
 const envResult = dotenv.config();
@@ -22,7 +23,7 @@ async function startServer() {
 
     const io = new Server(server, {
       cors: {
-        origin: process.env.FRONTEND_URL?.split(",") || "http://localhost:5173",
+        origin: buildCorsOriginChecker(),
         credentials: true,
       },
     });
