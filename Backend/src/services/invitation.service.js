@@ -1,25 +1,46 @@
 const Invitation = require("../models/Invitation.model");
 const Membership = require("../models/Membership.model");
+const Group = require("../models/Group.model");
+const User = require("../models/User.model");
 async function inviteUserToGroupService({ groupId, email, invitedBy }) {
   try {
     if (!groupId || !email || !invitedBy) {
-      throw new Error("Something is missing");
+      throw new Error("groupId, email and invitedBy are required");
     }
+
+    const normalizedEmail = String(email).toLowerCase().trim();
+
+    const group = await Group.findById(groupId).select("_id");
+    if (!group) throw new Error("Group not found");
+
+    // if the email belongs to an existing user, ensure they're not already a member
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (existingUser) {
+      const existingMembership = await Membership.findOne({
+        user: existingUser._id,
+        group: groupId,
+      });
+      if (existingMembership && existingMembership.status === "ACTIVE") {
+        throw new Error("User is already a member of this group");
+      }
+    }
+
     const existing = await Invitation.findOne({
-      email,
+      email: normalizedEmail,
       group: groupId,
       status: "PENDING",
     });
     if (existing) throw new Error("Invitation already pending for this user");
+
     const invite = await Invitation.create({
-      email: email,
+      email: normalizedEmail,
       invitedBy: invitedBy,
       group: groupId,
     });
     return invite;
   } catch (err) {
-    console.error("error is :", err);
-    throw new Error("error in making invitation");
+    console.error("inviteUserToGroupService error:", err);
+    throw new Error(err.message || "error in making invitation");
   }
 }
 

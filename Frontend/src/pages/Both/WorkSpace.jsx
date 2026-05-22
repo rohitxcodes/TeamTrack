@@ -67,7 +67,11 @@ function WorkSpace() {
       await refetch();
       if (inviteForm.groupId) await loadMembers(inviteForm.groupId);
     } catch (err) {
-      setLocalError(err?.message || "Failed to send invitation");
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to send invitation";
+      setLocalError(msg);
     } finally {
       setInviting(false);
     }
@@ -88,7 +92,11 @@ function WorkSpace() {
         action === "accept" ? "Invitation accepted" : "Invitation rejected",
       );
     } catch (err) {
-      setLocalError(err?.message || "Failed to update invitation");
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to update invitation";
+      setLocalError(msg);
     }
   }
 
