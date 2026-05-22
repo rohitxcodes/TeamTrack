@@ -10,6 +10,18 @@ async function inviteUserToGroupService({ groupId, email, invitedBy }) {
 
     const normalizedEmail = String(email).toLowerCase().trim();
 
+    // basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(normalizedEmail)) {
+      throw new Error("Invalid email address");
+    }
+
+    // prevent inviting yourself
+    const inviterUser = await User.findById(invitedBy).select("email");
+    if (inviterUser && inviterUser.email === normalizedEmail) {
+      throw new Error("You cannot invite yourself");
+    }
+
     const group = await Group.findById(groupId).select("_id");
     if (!group) throw new Error("Group not found");
 
@@ -118,7 +130,8 @@ async function acceptInvitationService({ inviteId, user }) {
     );
     return { membership: member, invitation: update };
   } catch (err) {
-    throw new Error("ERROR in accepting invite");
+    console.error("acceptInvitationService error:", err);
+    throw new Error(err.message || "ERROR in accepting invite");
   }
 }
 
@@ -135,7 +148,8 @@ async function rejectInvitationService({ inviteId, user }) {
     console.log(update);
     return update;
   } catch (err) {
-    throw new Error("TODO: implement rejectInvitationService");
+    console.error("rejectInvitationService error:", err);
+    throw new Error(err.message || "TODO: implement rejectInvitationService");
   }
 }
 
@@ -155,7 +169,8 @@ async function cancelInvitationService({ inviteId, user }) {
     await Invitation.findByIdAndDelete(inviteId);
     return invite;
   } catch (err) {
-    throw new Error("ERROR:Invite not canceled");
+    console.error("cancelInvitationService error:", err);
+    throw new Error(err.message || "ERROR:Invite not canceled");
   }
 }
 

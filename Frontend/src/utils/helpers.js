@@ -35,3 +35,8 @@ export function separateInvitations(invitations) {
     ),
   };
 }
+
+export function isValidEmail(value) {
+  if (!value || typeof value !== "string") return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}

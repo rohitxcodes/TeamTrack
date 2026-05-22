@@ -11,7 +11,12 @@ import {
   PendingInviteCard,
   AcceptedInviteCard,
 } from "../../components/Invites/InviteCard";
-import { getId, getGroupLabel, separateInvitations } from "../../utils/helpers";
+import {
+  getId,
+  getGroupLabel,
+  separateInvitations,
+  isValidEmail,
+} from "../../utils/helpers";
 
 function WorkSpace() {
   const { user } = useAuth();
@@ -54,6 +59,17 @@ function WorkSpace() {
   async function handleInviteMember(e) {
     e.preventDefault();
     if (!inviteForm.groupId || !inviteForm.email.trim()) return;
+    if (!isValidEmail(inviteForm.email)) {
+      setLocalError("Please provide a valid email address");
+      return;
+    }
+    if (
+      inviteForm.email.trim().toLowerCase() ===
+      (user?.email || "").toLowerCase()
+    ) {
+      setLocalError("You cannot invite yourself");
+      return;
+    }
 
     setInviting(true);
     setMessage("");
