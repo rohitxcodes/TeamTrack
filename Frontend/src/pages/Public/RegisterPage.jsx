@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PageHeader from "../../components/Common/PageHeader";
 import { register as registerRequest } from "../../api/auth.api";
+import { useAuth } from "../../context/useAuth";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,8 @@ function RegisterPage() {
   });
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   function onChange(event) {
     const { name, value } = event.target;
@@ -26,8 +29,16 @@ function RegisterPage() {
     try {
       const response = await registerRequest(formData);
       setMessage(response?.message || "Registered successfully.");
-      // redirect to login after successful registration
-      navigate("/login", { replace: true });
+      // auto-login after successful registration
+      try {
+        await login({ email: formData.email, password: formData.password });
+        navigate("/workspace", { replace: true });
+        return;
+      } catch (loginErr) {
+        // if auto-login fails, redirect to login page
+        navigate("/login", { replace: true });
+        return;
+      }
     } catch (err) {
       const msg =
         err?.response?.data?.message || err?.message || "Registration failed";
