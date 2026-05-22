@@ -5,20 +5,16 @@ const User = require("../models/User.model");
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 
 function isLocalhostUrl(value) {
-  if (typeof value !== "string") return false;
-  const parts = value
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  return parts.some((v) =>
-    /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(v),
+  return (
+    typeof value === "string" &&
+    /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?(\/|$)/i.test(value)
   );
 }
 
 function getCookieOptions() {
   const isProdLike =
     process.env.NODE_ENV === "production" ||
-    (process.env.FRONTEND_URL && !isLocalhostUrl(process.env.FRONTEND_URL));
+    !isLocalhostUrl(process.env.FRONTEND_URL);
 
   return {
     httpOnly: true,
