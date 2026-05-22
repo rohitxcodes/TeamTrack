@@ -82,7 +82,18 @@ async function inviteUserToGroupController(req, res) {
 
     return res.status(201).json({ message: "Invitation created", invitation });
   } catch (err) {
-    return res.status(500).json({ message: err.message || "Invite failed" });
+    // map common service errors to appropriate HTTP statuses
+    const msg = err.message || "Invite failed";
+    if (msg.includes("groupId, email and invitedBy are required")) {
+      return res.status(400).json({ message: msg });
+    }
+    if (msg.includes("Group not found")) {
+      return res.status(404).json({ message: msg });
+    }
+    if (msg.includes("already a member") || msg.includes("Invitation already pending")) {
+      return res.status(409).json({ message: msg });
+    }
+    return res.status(500).json({ message: msg });
   }
 }
 

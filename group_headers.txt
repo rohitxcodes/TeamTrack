@@ -1,0 +1,12 @@
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Access-Control-Allow-Origin: http://localhost:5173
+Vary: Origin
+Access-Control-Allow-Credentials: true
+Content-Type: application/json; charset=utf-8
+Content-Length: 214
+ETag: W/"d6-eZHxVAP5iYmxUcT2CpH1Rv0yfEc"
+Date: Fri, 22 May 2026 13:21:23 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
