@@ -39,3 +39,13 @@ export async function deleteGroupTask(groupId, taskId) {
   const res = await api.delete(`/groups/${groupId}/tasks/${taskId}`);
   return res.data;
 }
+
+export async function getGroupMessages(groupId) {
+  const res = await api.get(`/groups/${groupId}/messages`);
+  return res.data;
+}
+
+export async function createGroupMessage(groupId, data) {
+  const res = await api.post(`/groups/${groupId}/messages`, data);
+  return res.data;
+}

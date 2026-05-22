@@ -16,6 +16,10 @@ const {
   removeMemberFromGroupController,
 } = require("../controllers/group.controller");
 const {
+  getGroupMessagesController,
+  createGroupMessageController,
+} = require("../controllers/message.controller");
+const {
   createGroupTaskController,
   getGroupTasksController,
   getGroupTaskByIdController,
@@ -59,5 +63,13 @@ router.patch(
   updateGroupTaskController,
 );
 router.delete("/:groupId/tasks/:taskId", isAdmin, deleteGroupTaskController);
+
+// ── Group Chat Messages ───────────────────────────────────────
+router.get("/:groupId/messages", isMemberOrAdmin, getGroupMessagesController);
+router.post(
+  "/:groupId/messages",
+  isMemberOrAdmin,
+  createGroupMessageController,
+);
 
 module.exports = router;

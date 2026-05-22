@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import PageHeader from "../../components/Common/PageHeader";
 import { useAuth } from "../../context/useAuth";
@@ -32,10 +32,39 @@ function WorkSpace() {
   const [inviteForm, setInviteForm] = useState({ groupId: "", email: "" });
   const [inviting, setInviting] = useState(false);
 
+  const selectedGroup = useMemo(
+    () => groups.find((group) => getId(group) === selectedGroupId),
+    [groups, selectedGroupId],
+  );
+
+  const currentMembership = useMemo(
+    () => members.find((membership) => getId(membership?.user) === user?.id),
+    [members, user?.id],
+  );
+
+  const canInviteMembers =
+    Boolean(selectedGroup) &&
+    currentMembership?.role?.toUpperCase() === "ADMIN";
+
   const { pending, accepted } = useMemo(
     () => separateInvitations(invitations),
     [invitations],
   );
+
+  useEffect(() => {
+    if (!selectedGroupId && groups.length > 0) {
+      const firstGroupId = getId(groups[0]);
+      setSelectedGroupId(firstGroupId);
+      if (firstGroupId) {
+        loadMembers(firstGroupId);
+      }
+      return;
+    }
+
+    if (selectedGroupId) {
+      loadMembers(selectedGroupId);
+    }
+  }, [groups, loadMembers, selectedGroupId]);
 
   async function handleCreateGroup(e) {
     e.preventDefault();
@@ -226,54 +255,56 @@ function WorkSpace() {
         </section>
 
         <aside className="tt-card p-5 space-y-5">
-          <form onSubmit={handleInviteMember} className="space-y-3">
-            <div>
-              <h2 className="tt-heading-section">Invite members</h2>
-              <p className="tt-muted text-sm">
-                Send an invitation to a group you already belong to.
-              </p>
-            </div>
-            <select
-              className="tt-input"
-              value={inviteForm.groupId}
-              onChange={(event) =>
-                setInviteForm((current) => ({
-                  ...current,
-                  groupId: event.target.value,
-                }))
-              }
-              disabled={groups.length === 0}
-            >
-              <option value="">Choose a group</option>
-              {groups.map((group) => {
-                const groupId = getId(group);
-                return (
-                  <option key={groupId} value={groupId}>
-                    {getGroupLabel(group)}
-                  </option>
-                );
-              })}
-            </select>
-            <input
-              className="tt-input"
-              type="email"
-              placeholder="member@example.com"
-              value={inviteForm.email}
-              onChange={(event) =>
-                setInviteForm((current) => ({
-                  ...current,
-                  email: event.target.value,
-                }))
-              }
-            />
-            <button
-              type="submit"
-              className="tt-btn-secondary w-full"
-              disabled={inviting || groups.length === 0}
-            >
-              {inviting ? "Inviting..." : "Send invite"}
-            </button>
-          </form>
+          {canInviteMembers ? (
+            <form onSubmit={handleInviteMember} className="space-y-3">
+              <div>
+                <h2 className="tt-heading-section">Invite members</h2>
+                <p className="tt-muted text-sm">
+                  Send an invitation to this group.
+                </p>
+              </div>
+              <select
+                className="tt-input"
+                value={inviteForm.groupId}
+                onChange={(event) =>
+                  setInviteForm((current) => ({
+                    ...current,
+                    groupId: event.target.value,
+                  }))
+                }
+                disabled={groups.length === 0}
+              >
+                <option value="">Choose a group</option>
+                {groups.map((group) => {
+                  const groupId = getId(group);
+                  return (
+                    <option key={groupId} value={groupId}>
+                      {getGroupLabel(group)}
+                    </option>
+                  );
+                })}
+              </select>
+              <input
+                className="tt-input"
+                type="email"
+                placeholder="member@example.com"
+                value={inviteForm.email}
+                onChange={(event) =>
+                  setInviteForm((current) => ({
+                    ...current,
+                    email: event.target.value,
+                  }))
+                }
+              />
+              <button
+                type="submit"
+                className="tt-btn-secondary w-full"
+                disabled={inviting || groups.length === 0}
+              >
+                {inviting ? "Inviting..." : "Send invite"}
+              </button>
+            </form>
+          ) : null}
 
           <div className="space-y-3">
             <div>

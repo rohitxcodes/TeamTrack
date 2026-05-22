@@ -96,6 +96,7 @@ async function loginUser({ email, password }) {
       cookie: { token, options: getCookieOptions() },
       body: {
         message: "Login successful",
+        token,
         user: {
           id: user._id,
           name: user.name,

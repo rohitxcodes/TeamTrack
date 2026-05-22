@@ -43,7 +43,8 @@ async function startServer() {
       socket.on("chatMessage", (payload) => {
         // payload: { groupId, text, sender }
         if (payload?.groupId) {
-          io.to(payload.groupId).emit("chatMessage", payload);
+          // emit to other sockets in the room, exclude sender
+          socket.to(payload.groupId).emit("chatMessage", payload);
         }
       });
     });

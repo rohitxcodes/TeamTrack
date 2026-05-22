@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import socket from "../../socket";
+import { getGroupMessages, createGroupMessage } from "../../api/group.api";
 
 export default function GroupChat({ groupId, user }) {
   const [messages, setMessages] = useState([]);
@@ -8,16 +9,51 @@ export default function GroupChat({ groupId, user }) {
 
   useEffect(() => {
     if (!groupId) return;
+
+    // load last messages for this group
+    let mounted = true;
+    getGroupMessages(groupId)
+      .then((res) => {
+        const list = (res.messages || []).map((m) => ({
+          id: m._id,
+          text: m.text,
+          sender: {
+            id: m.sender?._id || m.sender?.id,
+            name: m.sender?.name || m.sender?.email,
+          },
+          createdAt: m.createdAt,
+        }));
+        if (mounted) setMessages(list);
+      })
+      .catch(() => {
+        // ignore
+      });
+
     // join the group room
     socket.emit("joinGroup", groupId);
 
     const handleIncoming = (payload) => {
-      setMessages((cur) => [...cur, payload]);
+      const normalized = {
+        id: payload._id || payload.id || String(payload.id || Date.now()),
+        text: payload.text,
+        sender: {
+          id: payload.sender?._id || payload.sender?.id,
+          name: payload.sender?.name || payload.sender?.email,
+        },
+        createdAt:
+          payload.createdAt || payload.created_at || new Date().toISOString(),
+      };
+
+      setMessages((cur) => {
+        if (cur.some((m) => m.id === normalized.id)) return cur;
+        return [...cur, normalized];
+      });
     };
 
     socket.on("chatMessage", handleIncoming);
 
     return () => {
+      mounted = false;
       socket.off("chatMessage", handleIncoming);
       socket.emit("leaveGroup", groupId);
     };
@@ -33,8 +69,8 @@ export default function GroupChat({ groupId, user }) {
     e.preventDefault();
     const trimmed = text.trim();
     if (!trimmed || !groupId) return;
-
-    const payload = {
+    // Optimistic payload for UI
+    const optimistic = {
       id: Date.now().toString(),
       text: trimmed,
       sender: {
@@ -45,9 +81,40 @@ export default function GroupChat({ groupId, user }) {
       groupId,
     };
 
-    // emit to server; the server echoes to the room, including this client
-    socket.emit("chatMessage", payload);
+    setMessages((cur) => [...cur, optimistic]);
     setText("");
+
+    // persist to API first
+    createGroupMessage(groupId, { text: trimmed })
+      .then((res) => {
+        const saved = res.data; // { message: 'Message saved', data: message }
+        const msg = saved.data || saved; // handle either shape
+        const normalized = {
+          id: msg._id || msg.id,
+          text: msg.text,
+          sender: {
+            id: msg.sender?._id || msg.sender?.id,
+            name: msg.sender?.name || msg.sender?.email,
+          },
+          createdAt: msg.createdAt,
+        };
+
+        // replace last optimistic message if possible (best-effort)
+        setMessages((cur) => {
+          const last = cur[cur.length - 1];
+          if (last && last.id === optimistic.id) {
+            return [...cur.slice(0, -1), normalized];
+          }
+          if (cur.some((m) => m.id === normalized.id)) return cur;
+          return [...cur, normalized];
+        });
+
+        // emit saved message to other clients
+        socket.emit("chatMessage", { ...normalized, groupId });
+      })
+      .catch(() => {
+        // keep optimistic message if save failed; optionally mark as failed
+      });
   }
 
   return (
