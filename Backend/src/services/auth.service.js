@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 function isLocalhostUrl(value) {
   return (
@@ -20,7 +20,7 @@ function getCookieOptions() {
     httpOnly: true,
     secure: isProdLike,
     sameSite: isProdLike ? "none" : "lax",
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 }
 
