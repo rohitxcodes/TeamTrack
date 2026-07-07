@@ -6,6 +6,7 @@ import { useAuth } from "../../context/useAuth";
 function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("info");
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
@@ -25,15 +26,19 @@ function LoginPage() {
     event.preventDefault();
     setSubmitting(true);
     setMessage("");
+    setMessageType("info");
 
     try {
-      const result = await login(formData);
-      setMessage("Signed in successfully.");
+      await login(formData);
       navigate("/workspace", { replace: true });
-      console.log("login result", result);
     } catch (err) {
       console.error("Login error:", err);
-      const msg = err?.message || err?.error || "Login failed";
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        err?.error ||
+        "Login failed";
+      setMessageType("error");
       setMessage(msg);
     } finally {
       setSubmitting(false);
@@ -82,7 +87,13 @@ function LoginPage() {
       </form>
 
       {message ? (
-        <p className="mt-4 text-emerald-700 text-sm">{message}</p>
+        <p
+          className={`mt-4 text-sm ${
+            messageType === "error" ? "text-rose-700" : "text-emerald-700"
+          }`}
+        >
+          {message}
+        </p>
       ) : null}
       <p className="mt-6 text-sm tt-muted">
         No account yet?{" "}
