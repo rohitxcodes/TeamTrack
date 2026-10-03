@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=32&pause=1000&color=6C63FF&center=true&vCenter=true&width=500&lines=TeamTrack+%F0%9F%97%82%EF%B8%8F;Role-Based+Task+Manager;Built+for+the+Real+World" alt="TeamTrack" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=32&pause=1000&color=6C63FF&center=true&vCenter=true&width=500&lines=TeamTrack+%F0%9F%97%82%EF%B8%8F;Role-Based+Task+Manager;Node+%C2%B7+Express+%C2%B7+MongoDB+%C2%B7+React" alt="TeamTrack" />
 
 <br/>
 
@@ -10,8 +10,8 @@
 
 <br/><br/>
 
-> **Secure multi-user task management with role-based access control.**
-> A secure, production-style task management system implementing **authentication, authorization, and ownership control** — the core pillars of real-world backend systems..
+> **Multi-user task management with role-based access control.**
+> A backend-focused MERN project built around **authentication, authorization, and ownership control**.
 
 <br/>
 
@@ -22,29 +22,26 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind%20v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)](https://jwt.io)
 
+**[Live demo](https://team-track-beta.vercel.app)**
+
 </div>
 
 ---
 
-## The Problem
+## Overview
 
-Most beginner MERN projects look like this:
+TeamTrack is a task management app with two roles, `admin` and `employee`. I built it to practice the access-control fundamentals behind multi-user systems: who you are (authentication), what you may do (authorization), and which data is yours (ownership).
 
-```
-✗  Any user can read/modify other users' data
-✗  No difference between admin and regular users
-✗  No ownership rules, no access control
-✗  Not usable in a real-world context
-```
-
-TeamTrack is built the opposite way:
+**Access rules**
 
 ```
-✓  Employees access only their own tasks
-✓  Admin has full control via protected routes
-✓  JWT stored as httpOnly cookie — XSS-safe
-✓  Every route middleware-enforced at the server level
+✓  Employees create and access only their own personal tasks
+✓  Admins have separate, protected routes to view and delete users and tasks
+✓  JWT is stored in an httpOnly cookie, so JavaScript cannot read it
+✓  Role and ownership checks are enforced on the server, never trusted from the client
 ```
+
+> **Status:** authentication, role middleware, the admin routes, and the group/membership model are working. Task routes, the admin dashboard, and the items under [Roadmap](#roadmap) are still in progress.
 
 ---
 
@@ -55,8 +52,8 @@ TeamTrack is built the opposite way:
 <td width="50%">
 
 ### 🔐 Authentication
-- Register & login with email/password
-- JWT issued as `httpOnly` cookie
+- Register and login with email and password
+- JWT issued as an `httpOnly` cookie
 - `bcrypt` password hashing
 - `/me` route for session validation
 
@@ -66,8 +63,8 @@ TeamTrack is built the opposite way:
 ### 🛡️ Role-Based Access
 - Two roles: `admin` and `employee`
 - Admin-only routes blocked at middleware
-- Employees only see tasks assigned to them
-- Role enforced server-side, not client-side
+- Roles enforced server-side, not client-side
+- Admins can view all users and tasks, and delete either
 
 </td>
 </tr>
@@ -75,23 +72,47 @@ TeamTrack is built the opposite way:
 <td width="50%">
 
 ### 📋 Task Management
-- `pending` → `in-progress` → `completed`
-- Admin creates and assigns tasks
-- Employees update their own tasks only
-- Full CRUD with ownership validation
+- Status flow: `pending` → `in-progress` → `completed`
+- Employees create their own personal tasks
+- Employees read, update, and delete only their own tasks
+- Ownership validated on every task request
 
 </td>
 <td width="50%">
 
-### 👥 Groups & Workspaces
-- Group-based workspace model
-- Membership management by admin
-- Add / remove members from groups
-- Scoped data access per workspace
+### 👥 Groups & Memberships
+- Group model with a separate `Membership` collection (users to groups, many-to-many)
+- Create groups and list your own groups
+- Admin can add and remove members
+- Workspace-scoped task access is planned (see Roadmap)
 
 </td>
 </tr>
 </table>
+
+---
+
+## Access Control Model
+
+| Action | Employee | Admin |
+|--------|----------|-------|
+| Create a personal task | ✓ | |
+| Read / update / delete own task | ✓ | |
+| Read another user's task | ✗ | via `/api/admin/tasks` |
+| Delete any task | ✗ | ✓ |
+| List all users | ✗ | ✓ |
+| Delete a user | ✗ | ✓ |
+
+Guards live in `Backend/src/middleware/`: an auth guard (valid session), an admin guard (role check), and a group guard (group membership).
+
+---
+
+## Security Notes
+
+- **Passwords:** hashed with `bcrypt`; plaintext passwords are never stored.
+- **Token storage:** the JWT is in an `httpOnly` cookie, so a cross-site scripting (XSS) bug cannot read and steal the token. This does not make XSS harmless: injected script could still send requests as the logged-in user while the page is open, so XSS has to be prevented separately.
+- **Cookie-based sessions and CSRF:** cookie auth needs CSRF consideration. A `SameSite` policy review and further hardening are on the roadmap.
+- **Authorization:** role and ownership checks run on the server for every protected route.
 
 ---
 
@@ -120,7 +141,7 @@ TeamTrack/
 │   ├── controllers/    # auth · admin · task
 │   ├── middleware/     # auth guard · admin guard · group guard
 │   ├── models/         # User · Task · Group · Membership
-│   ├── routes/         # /api/auth · /api/admin · /api/groups
+│   ├── routes/         # /api/auth · /api/admin · /api/groups · /api/tasks
 │   ├── app.js          # Express setup
 │   └── index.js        # Server entry
 │
@@ -136,6 +157,8 @@ TeamTrack/
 ---
 
 ## Getting Started
+
+**Prerequisites:** Node.js 20+ and a MongoDB Atlas (or local MongoDB) connection string.
 
 ### 1. Clone
 
@@ -178,43 +201,47 @@ VITE_API_URL=http://localhost:3000
 npm run dev
 ```
 
+The frontend runs at `http://localhost:5173` and the API at `http://localhost:3000`.
+
 ---
 
 ## API Routes
 
-### `/api/auth` — Public
+### `/api/auth`: Public
 
 | Method | Route | Description |
 |--------|-------|-------------|
 | `POST` | `/register` | Create account |
-| `POST` | `/login` | Get JWT cookie |
+| `POST` | `/login` | Validate credentials, set JWT cookie |
 | `GET` | `/me` | Current user session |
 
-### `/api/tasks` — Employee Protected
+### `/api/tasks`: Authenticated (personal tasks)
+
+> Route wiring for tasks is still in progress (see Roadmap).
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| `POST` | `/` | Create task |
-| `GET` | `/` | Get own tasks |
-| `GET` | `/:id` | Get task (owner only) |
-| `PUT` | `/:id` | Update task (owner only) |
-| `DELETE` | `/:id` | Delete task (owner only) |
+| `POST` | `/` | Create a personal task |
+| `GET` | `/` | List your own tasks |
+| `GET` | `/:id` | Get a task (owner only) |
+| `PUT` | `/:id` | Update a task (owner only) |
+| `DELETE` | `/:id` | Delete a task (owner only) |
 
-### `/api/admin` — Admin Only
+### `/api/admin`: Admin only
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| `GET` | `/users` | All users |
-| `DELETE` | `/users/:id` | Delete user |
-| `GET` | `/tasks` | All tasks |
+| `GET` | `/users` | List all users |
+| `DELETE` | `/users/:id` | Delete a user |
+| `GET` | `/tasks` | List all tasks |
 | `DELETE` | `/tasks/:id` | Delete any task |
 
-### `/api/groups` — Protected
+### `/api/groups`: Authenticated
 
 | Method | Route | Description |
 |--------|-------|-------------|
 | `POST` | `/` | Create group |
-| `GET` | `/` | My groups |
+| `GET` | `/` | List my groups |
 | `POST` | `/:id/members` | Add member (admin) |
 | `DELETE` | `/:id/members/:uid` | Remove member (admin) |
 
@@ -243,14 +270,19 @@ POST /api/auth/login
 ## Roadmap
 
 - [x] JWT auth with httpOnly cookies
-- [x] Role middleware — admin / employee
+- [x] Role middleware (admin / employee)
 - [x] Ownership-enforced task access
 - [x] Admin route suite
-- [x] Group & membership model
+- [x] Group and membership model
 - [ ] Task routes fully wired
 - [ ] Frontend admin dashboard
+- [ ] Logout endpoint (clear the session cookie)
+- [ ] Login rate limiting and request validation
+- [ ] CSRF hardening (`SameSite` policy review)
+- [ ] Automated tests for the authorization rules (admin vs employee vs another user's resource)
+- [ ] Scope tasks to group workspaces
+- [ ] Pagination and task filters
 - [ ] Real-time updates via Socket.io
-- [ ] Pagination & task filters
 - [ ] Email notifications
 
 ---
